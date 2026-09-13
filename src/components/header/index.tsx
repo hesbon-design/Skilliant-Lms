@@ -28,46 +28,47 @@ const menuList: MenuType[] = [
   {
     id: 3,
     label: "About",
-    href: "#",
+    href: "/about",
   },
   {
     id: 4,
-    label: "Instructors",
-    href: "#",
+    label: "Blog",
+    href: "/blog",
   },
   {
     id: 5,
+    label: "Contact",
+    href: "/contact",
+  },
+  {
+    id: 6,
     label: "All Pages",
-    href: "#",
+    href: "/courses",
     subMenu: [
-      { id: 1, label: "Contact", href: "/contact" },
-      { id: 2, label: "Blog", href: "#" },
-      // { id: 3, label: "Blog Details", href: "/blog/1" },
-      { id: 4, label: "Sign Up", href: "#" },
-      { id: 5, label: "Login", href: "#" },
-      { id: 6, label: "Reset password", href: "#" },
-      { id: 7, label: "Terms and Conditions", href: "#" },
-      { id: 8, label: "Privacy Policy", href: "#" },
-      { id: 9, label: "404 Error", href: "/not-found" },
+      { id: 1, label: "Learner & Company Portal", href: "/dashboard" },
+      { id: 2, label: "Instructor & Admin Studio", href: "/admin" },
+      { id: 3, label: "Course Catalog", href: "/courses" },
+      { id: 4, label: "Shopping Cart", href: "/cart" },
+      { id: 5, label: "Terms and Conditions", href: "/terms-and-conditions" },
+      { id: 6, label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];
 
 const Header = () => {
-
   return (
-    <header className="sticky top-0 left-0 z-50 w-full overflow-x-clip bg-primary py-4">
-      <div className="container">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-10">
-            <Link href={"/"} className="inline-block shrink-0 py-1.75">
-              <Logo className="text-purple-500 max-sm:w-27" />
+    <header className="sticky top-0 left-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-md py-3 transition-all">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-8 xl:gap-10">
+            <Link href={"/"} className="inline-flex items-center shrink-0 py-1" title="Skillsaint Home">
+              <Logo className="text-purple-600 max-sm:w-28" />
             </Link>
             <Navigation data={menuList} />
           </div>
-          <div className="flex items-center gap-7">
-            <HeaderExtraInfo  />
-            <MobileNavigation data={menuList}  />
+          <div className="flex items-center gap-4">
+            <HeaderExtraInfo />
+            <MobileNavigation data={menuList} />
           </div>
         </div>
       </div>

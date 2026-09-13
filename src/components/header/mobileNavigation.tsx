@@ -50,22 +50,23 @@ const MobileNavigation = ({ data }: { data: MenuType[] }) => {
       <div
         onClick={() => setNavbarShow(false)}
         className={cn(
-          "fixed top-0 left-0 z-50 h-full min-h-screen w-full min-w-screen bg-gray-700/90 transition-all duration-300",
+          "fixed top-0 left-0 z-50 h-full min-h-screen w-full min-w-screen bg-gray-700/80 backdrop-blur-xs transition-all duration-300",
           navbarShow ? "visible opacity-100" : "invisible opacity-0",
         )}
       ></div>
       <nav
         className={cn(
-          "fixed top-0 z-999 flex h-full min-h-screen w-full max-w-85 flex-col justify-between overflow-y-auto bg-primary px-3 pt-7 pb-3 shadow-lg transition-all duration-500",
+          "fixed top-0 z-[60] flex h-full min-h-screen w-full max-w-85 flex-col justify-between overflow-y-auto bg-primary px-4 pt-8 pb-4 shadow-2xl transition-all duration-500",
           navbarShow ? "right-0" : "-right-full",
         )}
       >
         {/* navigation close button */}
         <button
           onClick={() => setNavbarShow(false)}
-          className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center transition-all duration-500 hover:text-red-600"
+          className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-red-600 transition-colors"
+          title="Close Navigation"
         >
-          <CloseIcon />
+          <CloseIcon className="size-5" />
         </button>
         {/* menu items */}
         <ul className="flex flex-col">
@@ -83,8 +84,8 @@ const MobileNavigation = ({ data }: { data: MenuType[] }) => {
                     handleDropdownLinkClick(e, id, label, subMenu)
                   }
                   className={cn(
-                    "flex w-full items-center justify-between rounded-xl px-5 py-2 leading-6 font-medium tracking-base transition-all duration-500 hover:text-purple-500",
-                    isActive ? "text-purple-500" : "text-secondary",
+                    "flex w-full items-center justify-between rounded-xl px-5 py-2 leading-6 font-medium tracking-base transition-all duration-500 hover:text-purple-600",
+                    isActive ? "text-purple-600" : "text-secondary",
                   )}
                 >
                   {label}
@@ -116,9 +117,9 @@ const MobileNavigation = ({ data }: { data: MenuType[] }) => {
                         <Link
                           href={href}
                           className={cn(
-                            "flex rounded-xl px-5 py-2 text-sm leading-6 font-medium tracking-base transition-all duration-500 hover:bg-gray-50 hover:text-purple-500",
+                            "flex rounded-xl px-5 py-2 text-sm leading-6 font-medium tracking-base transition-all duration-500 hover:bg-gray-50 hover:text-purple-600",
                             pathName === href
-                              ? "bg-gray-50 text-purple-500"
+                              ? "bg-gray-50 text-purple-600"
                               : "text-secondary",
                           )}
                         >
@@ -133,13 +134,16 @@ const MobileNavigation = ({ data }: { data: MenuType[] }) => {
           })}
         </ul>
 
-        {/* login and sign up button the button*/}
-        <Button className="flex h-12 w-full justify-between gap-2.5 py-1.5 pr-1.5 pl-6 text-base tracking-base lg:hidden">
-          Login/ Sign up
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-purple-500">
+        {/* login and sign up button */}
+        <Link
+          href="/login"
+          className="flex h-12 w-full items-center justify-between gap-2.5 rounded-full bg-[#7D52F4] hover:bg-purple-700 text-white py-1.5 pr-1.5 pl-6 text-base font-semibold tracking-base transition-colors lg:hidden"
+        >
+          <span>Login/ Sign up</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-purple-600">
             <ArrowRight />
           </span>
-        </Button>
+        </Link>
       </nav>
     </div>
   );

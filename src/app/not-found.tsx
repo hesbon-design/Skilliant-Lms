@@ -28,18 +28,15 @@ const NotFound = () => {
             <p className="mt-3 block text-sm leading-5 font-medium tracking-sm text-secondary">
               The page you’re trying to reach isn’t available right now.
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="mt-8 py-1.5 pr-6 pl-1.5 max-sm:w-full"
+            <Link
+              href="/"
+              className="mt-8 group inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full text-sm font-medium h-11 sm:h-12 py-1.5 pr-6 pl-1.5 bg-[#7D52F4] text-white hover:bg-purple-700 transition-colors max-sm:w-full"
             >
-              <Link href={"/"}>
-                <span className="rotate-180">
-                  <ButtonArrow />
-                </span>
-                <span className="w-full text-center">Back to Home</span>
-              </Link>
-            </Button>
+              <span className="rotate-180">
+                <ButtonArrow />
+              </span>
+              <span className="w-full text-center">Back to Home</span>
+            </Link>
           </div>
         </div>
       </section>

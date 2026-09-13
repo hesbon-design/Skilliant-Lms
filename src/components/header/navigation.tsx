@@ -9,7 +9,7 @@ const Navigation = ({ data }: { data: MenuType[] }) => {
   const pathName = usePathname();
   return (
     <nav className="hidden xl:block">
-      <ul className="flex items-center">
+      <ul className="flex items-center gap-1">
         {data.map(({ href, id, label, subMenu }) => {
           // Check if current path matches parent or any submenu item
           const isActive =
@@ -21,31 +21,35 @@ const Navigation = ({ data }: { data: MenuType[] }) => {
               <Link
                 href={href}
                 className={cn(
-                  "inline-flex items-center gap-x-1 rounded-xl px-4.5 py-2 leading-6 font-medium tracking-base transition-all duration-500 group-hover/dropdown:text-purple-500",
-                  isActive ? "text-purple-500" : "text-secondary",
+                  "inline-flex items-center gap-x-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-200 hover:text-purple-600",
+                  isActive ? "text-purple-600 font-semibold" : "text-gray-700",
                 )}
               >
-                {label}
-                {subMenu?.length && <ChevronDown className="size-5" />}
+                <span>{label}</span>
+                {subMenu?.length && (
+                  <ChevronDown className="size-4 text-gray-400 transition-transform duration-200 group-hover/dropdown:rotate-180 group-hover/dropdown:text-purple-600" />
+                )}
               </Link>
               {subMenu?.length && (
-                <ul className="absolute right-0 z-40 hidden min-w-54.25 rounded-2xl bg-primary px-1.5 py-2 shadow-2xl group-hover/dropdown:block">
-                  {subMenu.map(({ href, id, label }) => (
-                    <li key={id}>
-                      <Link
-                        href={href}
-                        className={cn(
-                          "flex rounded-lg px-3 py-2.5 text-sm leading-6 font-medium tracking-base transition-all duration-500 hover:bg-gray-50 hover:text-purple-500",
-                          pathName === href
-                            ? "bg-gray-50 text-purple-500"
-                            : "text-secondary",
-                        )}
-                      >
-                        {label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <div className="absolute left-0 top-full pt-2 z-50 hidden group-hover/dropdown:block animate-in fade-in slide-in-from-top-1">
+                  <ul className="min-w-60 rounded-2xl border border-gray-100 bg-white p-2 shadow-xl ring-1 ring-black/5">
+                    {subMenu.map(({ href, id, label }) => (
+                      <li key={id}>
+                        <Link
+                          href={href}
+                          className={cn(
+                            "flex items-center rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors hover:bg-purple-50 hover:text-purple-700",
+                            pathName === href
+                              ? "bg-purple-50 text-purple-700 font-semibold"
+                              : "text-gray-700",
+                          )}
+                        >
+                          {label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </li>
           );

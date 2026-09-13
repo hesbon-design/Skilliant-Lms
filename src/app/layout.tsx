@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteName, siteUrl } from "@/utils/envExport";
 import { Inter, Inter_Tight, Mulish } from "next/font/google";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import LayoutWrapper from "@/components/layoutWrapper";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -64,9 +63,9 @@ export default function RootLayout({
       <body
         className={`${interTight.variable} ${mulish.variable} ${inter.variable} antialiased`}
       >
-        <Header/>
-        {children}
-        <Footer/>
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

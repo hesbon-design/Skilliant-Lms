@@ -18,7 +18,7 @@ const BlogCard = ({ blog }: { blog: BlogType }) => {
       </div>
       <div className="pt-6">
         <Link
-          href={`#`}
+          href={`/blog/${blog.slug.current}`}
           className="trani text-lg font-semibold duration-500 hover:text-purple-500 sm:text-xl lg:text-2xl lg:leading-8"
         >
           {blog.title}

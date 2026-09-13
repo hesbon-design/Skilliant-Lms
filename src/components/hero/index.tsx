@@ -58,67 +58,61 @@ const Hero = () => {
             one place. Learn at your own pace from industry experts
           </p>
           <div className="mt-12 flex flex-col gap-4 max-sm:w-full sm:flex-row">
-            <Button
-              asChild
-              size="lg"
-              className="py-1.5 pr-1.5 pl-6 max-sm:w-full"
+            <Link
+              href="/courses"
+              className="group inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full text-sm font-medium h-11 sm:h-12 px-6 py-1.5 pr-1.5 pl-6 bg-[#7D52F4] text-white hover:bg-purple-700 transition-colors max-sm:w-full"
             >
-              <Link href={"/courses"}>
-                <span className="w-full">Browse Course</span>
-                <ButtonArrow />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="w-full bg-primary sm:max-w-[133px]"
+              <span className="w-full">Browse Course</span>
+              <ButtonArrow />
+            </Link>
+            <Link
+              href="/about"
+              className="group inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full text-sm font-medium h-11 sm:h-12 px-6 py-3 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 transition-colors w-full sm:max-w-[133px]"
             >
-              <Link href={"/about"}>
-                <span>Learn More</span>
-              </Link>
-            </Button>
+              <span>Learn More</span>
+            </Link>
           </div>
           {/* image gallery */}
-          <div className="pt-20 sm:pt-[154px]">
-            <div className="mx-auto grid max-w-[1048px] grid-cols-2 lg:grid-cols-4">
-              <div className="relative z-[1] h-[272px] w-[261px] rotate-[7deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl">
+          <div className="pt-14 sm:pt-20 lg:pt-[154px] overflow-hidden">
+            <div className="mx-auto grid max-w-[1048px] grid-cols-2 justify-items-center gap-3 sm:gap-6 lg:grid-cols-4">
+              <div className="relative z-[1] w-full max-w-[155px] sm:max-w-[261px] aspect-[261/272] rotate-[5deg] sm:rotate-[7deg] rounded-xl sm:rounded-[14.7px] bg-primary p-1 sm:p-1.5 shadow-xl sm:shadow-2xl">
                 <Image
                   width={261}
                   height={272}
-                  sizes="100vw"
+                  sizes="(max-width: 640px) 155px, 261px"
                   src={"/images/hero/img-1.png"}
                   alt="img"
+                  className="h-full w-full object-cover rounded-lg sm:rounded-[14.7px]"
                 />
               </div>
-              <div className="h-[272px] w-[261px] -rotate-[15deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl">
+              <div className="w-full max-w-[155px] sm:max-w-[261px] aspect-[261/272] -rotate-[8deg] sm:-rotate-[15deg] rounded-xl sm:rounded-[14.7px] bg-primary p-1 sm:p-1.5 shadow-xl sm:shadow-2xl">
                 <Image
                   width={261}
                   height={272}
-                  sizes="100vw"
+                  sizes="(max-width: 640px) 155px, 261px"
                   src={"/images/hero/img-2.png"}
                   alt="img"
-                  className="rounded-[14.7px]"
+                  className="h-full w-full object-cover rounded-lg sm:rounded-[14.7px]"
                 />
               </div>
-              <div className="hidden h-[272px] w-[261px] rotate-[7deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl sm:block">
+              <div className="hidden w-full max-w-[261px] aspect-[261/272] rotate-[7deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl sm:block">
                 <Image
                   width={261}
                   height={272}
-                  sizes="100vw"
+                  sizes="261px"
                   src={"/images/hero/img-3.png"}
                   alt="img"
-                  className="rounded-[14.7px]"
+                  className="h-full w-full object-cover rounded-[14.7px]"
                 />
               </div>
-              <div className="hidden h-[272px] w-[261px] -rotate-[7.85deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl sm:block">
+              <div className="hidden w-full max-w-[261px] aspect-[261/272] -rotate-[7.85deg] rounded-[14.7px] bg-primary p-1.5 shadow-2xl sm:block">
                 <Image
                   width={261}
                   height={272}
-                  sizes="100vw"
+                  sizes="261px"
                   src={"/images/hero/img-4.png"}
                   alt="img"
-                  className="rounded-[14.7px]"
+                  className="h-full w-full object-cover rounded-[14.7px]"
                 />
               </div>
             </div>
