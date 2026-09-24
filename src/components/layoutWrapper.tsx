@@ -9,12 +9,13 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isDashboard =
+  const isExcluded =
     pathname?.startsWith("/dashboard") ||
     pathname?.startsWith("/admin") ||
-    pathname?.startsWith("/learn");
+    pathname?.startsWith("/learn") ||
+    pathname?.startsWith("/checkout");
 
-  if (isDashboard) {
+  if (isExcluded) {
     return <>{children}</>;
   }
 

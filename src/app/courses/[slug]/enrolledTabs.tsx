@@ -10,7 +10,7 @@ interface EnrolledTabsProps {
 }
 
 export default function EnrolledTabs({ courseSlug, children }: EnrolledTabsProps) {
-  const [activeTab, setActiveTab] = useState<"info" | "qa" | "announcements" | "gradebook" | "resources">("info");
+  const [activeTab, setActiveTab] = useState<"info" | "qa" | "announcements" | "resources">("info");
 
   return (
     <div>
@@ -48,17 +48,6 @@ export default function EnrolledTabs({ courseSlug, children }: EnrolledTabsProps
           )}
         >
           Announcements
-        </button>
-        <button
-          onClick={() => setActiveTab("gradebook")}
-          className={cn(
-            "rounded-xl px-4 py-2 text-sm font-semibold transition-colors",
-            activeTab === "gradebook"
-              ? "bg-purple-50 text-purple-600"
-              : "text-gray-500 hover:text-gray-900"
-          )}
-        >
-          Gradebook
         </button>
         <button
           onClick={() => setActiveTab("resources")}
@@ -113,23 +102,6 @@ export default function EnrolledTabs({ courseSlug, children }: EnrolledTabsProps
           </div>
         )}
 
-        {activeTab === "gradebook" && (
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-xs">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-50 text-2xl">
-              📊
-            </div>
-            <h4 className="mt-4 font-semibold text-gray-900">Your Gradebook</h4>
-            <p className="mt-1 text-sm text-gray-500">
-              Track quiz results and assignment grades for this course.
-            </p>
-            <Link
-              href={`/learn/${courseSlug}/gradebook`}
-              className="mt-5 inline-block rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 transition-colors"
-            >
-              View Course Gradebook →
-            </Link>
-          </div>
-        )}
 
         {activeTab === "resources" && (
           <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-xs">

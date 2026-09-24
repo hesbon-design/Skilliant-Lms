@@ -29,10 +29,7 @@ type TabKey =
   | "certifications"
   | "settings"
   | "support"
-  | "announcements"
-  | "discussions"
-  | "live-classes"
-  | "analytics";
+  | "announcements";
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -926,89 +923,6 @@ function DashboardContent() {
           </div>
         )}
 
-        {/* ================= TAB 8: DISCUSSIONS ================= */}
-        {activeTab === "discussions" && (
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                Discussions
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Connect with fellow learners and instructors.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-xs">
-              <div className="flex size-12 items-center justify-center rounded-full bg-purple-50 text-2xl">
-                💬
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-gray-900">No active discussions</h3>
-              <p className="mt-1 max-w-sm text-sm text-gray-500">
-                You haven&apos;t joined any discussion channels yet. Check your enrolled courses to start interacting with peers!
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ================= TAB 9: LIVE CLASSES ================= */}
-        {activeTab === "live-classes" && (
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                Live Classes
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Join scheduled webinars and live tutoring sessions.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-xs">
-              <div className="flex size-12 items-center justify-center rounded-full bg-purple-50 text-2xl">
-                📹
-              </div>
-              <h3 className="mt-4 text-base font-semibold text-gray-900">No live classes scheduled</h3>
-              <p className="mt-1 max-w-sm text-sm text-gray-500">
-                Your enrolled courses do not have upcoming live sessions this week. Check back soon for new webinar announcements.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ================= TAB 10: ANALYTICS ================= */}
-        {activeTab === "analytics" && (
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                Learning Analytics
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Track your study habits, retention rate, and milestones.
-              </p>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-3">
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-                <p className="text-sm font-semibold text-gray-700">Weekly Goal</p>
-                <h4 className="mt-2 text-2xl font-bold text-gray-900">3 / 5 hrs</h4>
-                <div className="mt-3 h-2 w-full rounded-full bg-gray-100 overflow-hidden">
-                  <div className="h-full w-3/5 rounded-full bg-purple-600" />
-                </div>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-                <p className="text-sm font-semibold text-gray-700">Quiz Accuracy</p>
-                <h4 className="mt-2 text-2xl font-bold text-gray-900">85%</h4>
-                <div className="mt-3 h-2 w-full rounded-full bg-gray-100 overflow-hidden">
-                  <div className="h-full w-[85%] rounded-full bg-green-500" />
-                </div>
-              </div>
-              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-                <p className="text-sm font-semibold text-gray-700">Streak</p>
-                <h4 className="mt-2 text-2xl font-bold text-gray-900">4 Days 🔥</h4>
-                <p className="mt-2 text-sm text-gray-500">Keep it going tomorrow!</p>
-              </div>
-            </div>
-          </div>
-        )}
     </div>
   );
 }

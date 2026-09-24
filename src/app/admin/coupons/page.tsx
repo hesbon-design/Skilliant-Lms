@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { initialAdminCoupons, AdminCoupon } from "@/data/adminCouponsData";
 import { cn } from "@/lib/utils";
 import { SearchIcon, PlusIcon, Trash2Icon, FilterIcon, CouponIcon } from "../adminIcons";
@@ -161,16 +162,13 @@ export default function AdminCouponsPage() {
           </h1>
         </div>
 
-        <button
-          onClick={() => {
-            handleGenerateCode();
-            setIsCreateModalOpen(true);
-          }}
+        <Link
+          href="/admin/coupons/new"
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors self-start sm:self-auto whitespace-nowrap shrink-0"
         >
           <PlusIcon className="size-4" />
-          <span className="whitespace-nowrap">Create Coupon</span>
-        </button>
+          <span className="whitespace-nowrap shrink-0">Create Coupon</span>
+        </Link>
       </div>
 
       {/* KPI Overview Cards */}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cat-1",
+    "name": "Data & AI",
+    "slug": "data-ai",
+    "parent": "None",
+    "description": "Data analytics, machine learning, predictive models, and enterprise AI applications",
+    "image": "/images/courses/Ai-Data_-Data-Analytics-with-Excel-Power-BI.webp",
+    "coursesCount": 4
+  },
+  {
+    "id": "cat-2",
+    "name": "Development",
+    "slug": "development",
+    "parent": "None",
+    "description": "Full-stack software engineering, modern web frameworks, APIs, and systems architecture",
+    "image": "/images/courses/Software-Development_-Modern-Web-Development-with-React.webp",
+    "coursesCount": 5
+  },
+  {
+    "id": "cat-3",
+    "name": "Cloud + IT Ops",
+    "slug": "cloud-it-ops",
+    "parent": "Development",
+    "description": "Enterprise cloud infrastructure, DevOps pipelines, containerization, and systems reliability",
+    "image": "/images/courses/Cloud-It-Ops_-Cloud-Fundamentals-for-Enterprise-Teams.webp",
+    "coursesCount": 3
+  },
+  {
+    "id": "cat-4",
+    "name": "Heavy Machinery & Safety",
+    "slug": "machinery-safety",
+    "parent": "None",
+    "description": "OSHA-compliant equipment operation, safety inspection, hydraulic systems, and hazard management",
+    "image": "/images/courses/web-development-bootcamp-thumbnail.webp",
+    "coursesCount": 4
+  },
+  {
+    "id": "cat-5",
+    "name": "Leadership & Management",
+    "slug": "leadership-management",
+    "parent": "None",
+    "description": "Executive leadership, strategic decision making, team coaching, and performance management",
+    "image": "/images/courses/Leadership-and-Management_-Leading-High-Performing-Teams.webp",
+    "coursesCount": 4
+  },
+  {
+    "id": "cat-6",
+    "name": "Communication Skills",
+    "slug": "communication-skills",
+    "parent": "Leadership & Management",
+    "description": "Workplace communication, business writing, executive presentations, and cross-cultural collaboration",
+    "image": "/images/courses/Communication-Skill_-Mastering-Workplace-Communication.webp",
+    "coursesCount": 3
+  },
+  {
+    "id": "cat-7",
+    "name": "Security & Compliance",
+    "slug": "security-compliance",
+    "parent": "None",
+    "description": "Enterprise cybersecurity, corporate compliance, data privacy regulations, and risk auditing",
+    "image": "/images/courses/Security_-Data-Privacy-Compliance-for-Professionals.webp",
+    "coursesCount": 3
+  },
+  {
+    "id": "cat-8",
+    "name": "HR & Workplace Culture",
+    "slug": "hr-workplace-culture",
+    "parent": "None",
+    "description": "Employee engagement, workplace diversity and inclusion, retention strategies, and talent ops",
+    "image": "/images/courses/HR-and-Workplace_-Employee-Engagement-Retention-Strategies.webp",
+    "coursesCount": 2
+  }
+]

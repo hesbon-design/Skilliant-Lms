@@ -112,12 +112,6 @@ const LiveClassIcon = () => (
   </svg>
 );
 
-const GradebookIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
 
 const CertificateIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -232,7 +226,6 @@ function CoursePlayerContent({
     pathname.includes("/resources") ||
     pathname.includes("/announcements") ||
     pathname.includes("/live-classes") ||
-    pathname.includes("/gradebook") ||
     pathname.includes("/certificate") ||
     pathname.includes("/info");
 
@@ -254,12 +247,6 @@ function CoursePlayerContent({
       icon: <LiveClassIcon />,
       href: `/learn/${courseSlug}/live-classes`,
       isActive: pathname.includes("/live-classes"),
-    },
-    {
-      label: "Gradebook",
-      icon: <GradebookIcon />,
-      href: `/learn/${courseSlug}/gradebook`,
-      isActive: pathname.includes("/gradebook"),
     },
     {
       label: "Certificate",
@@ -305,7 +292,9 @@ function CoursePlayerContent({
         </h1>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="ml-auto flex items-center justify-center size-8 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors lg:hidden"
+          className="ml-auto flex items-center justify-center size-8 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+          title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+          aria-label="Toggle curriculum sidebar"
         >
           <MenuIcon />
         </button>

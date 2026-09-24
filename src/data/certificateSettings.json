@@ -1,0 +1,13 @@
+{
+  "allowInstructorsToUseAdminCertificates": true,
+  "authorizedName": "Dr. Hesbon Ombati",
+  "authorizedTitle": "Dean of Technical Education & Academy Director",
+  "authorizedCompany": "Skilliant Global Academy",
+  "showInstructorName": false,
+  "sendCertificateLinkInEmail": true,
+  "requireLoginToAccess": false,
+  "signatureImageUrl": "/images/signature.png",
+  "verificationPageUrl": "/certificates/verify",
+  "defaultPageSize": "Letter",
+  "defaultOrientation": "Landscape"
+}

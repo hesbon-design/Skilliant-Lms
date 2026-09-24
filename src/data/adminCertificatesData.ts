@@ -5,7 +5,7 @@ export interface AdminCertificate {
   courseSlug: string;
   courseTitle: string;
   category: string;
-  templateStyle: "Classic Border" | "Modern Geometric" | "Technical Excellence" | "Corporate Crest";
+  templateStyle: "Classic Border" | "Modern Geometric" | "Technical Excellence" | "Corporate Crest" | "Creative Vanguard" | "Minimalist Diploma";
   signatoryName: string;
   signatoryTitle: string;
   organization: string;

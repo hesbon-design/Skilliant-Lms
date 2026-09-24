@@ -59,6 +59,13 @@ export const QAIcon = ({ className = "size-4" }: IconProps) => (
   </svg>
 );
 
+export const GradebookIcon = ({ className = "size-4" }: IconProps) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+    <path d="m9 11 2 2 4-4" />
+  </svg>
+);
+
 export const OrganizationsIcon = ({ className = "size-4" }: IconProps) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
@@ -374,5 +381,6 @@ export const TableViewIcon = ({ className = "size-4" }: IconProps) => (
     <path d="M3 18h18" />
   </svg>
 );
+
 
 

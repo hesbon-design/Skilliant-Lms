@@ -20,24 +20,48 @@ const CourseCard = ({ course }: { course: CourseType }) => {
           className="w-full rounded-2xl"
         />
         <div className="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-primary pt-0.5 pr-2 pb-0.5 pl-1">
-            <div className="flex h-4 w-4 items-center justify-center text-yellow-400">
-              <Star className="size-4" />
-            </div>
-            <small className="text-sm leading-5 tracking-sm">
-              {'5.0'}
-            </small>
+          <div className="flex h-4 w-4 items-center justify-center text-yellow-400">
+            <Star className="size-4" />
           </div>
+          <small className="text-sm leading-5 tracking-sm">
+            {'5.0'}
+          </small>
+        </div>
+        {course.isBundle && (
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-purple-700/90 backdrop-blur-xs px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-sm ring-1 ring-white/20">
+            <span>📦 Specialization</span>
+          </div>
+        )}
       </div>
       <div className="flex h-1/2 flex-col justify-between pt-5 sm:px-4">
         <ul className="flex flex-wrap items-center gap-2.5 pb-4">
-          <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
-            <BookOpen className="size-4 stroke-[0.75]" />
-            <span className="text-xs leading-4.5">{course.lessonsCount} Lessons</span>
-          </li>
-          <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
-            <Clock className="size-4" />
-            <span className="text-xs leading-4.5">{calculateMinutes(course.duration || 0)}</span>
-          </li>
+          {course.isBundle ? (
+            <>
+              <li className="flex max-h-6.5 items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-xs font-semibold text-purple-700">
+                <span>{course.bundleCoursesCount || course.bundleCourses?.length || 3} Courses Track</span>
+              </li>
+              <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
+                <Clock className="size-4" />
+                <span className="text-xs leading-4.5">{Math.round((course.duration || 0) / 60)} hrs</span>
+              </li>
+              {course.bundleSavingsPercent && (
+                <li className="flex max-h-6.5 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">
+                  Save {course.bundleSavingsPercent}%
+                </li>
+              )}
+            </>
+          ) : (
+            <>
+              <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
+                <BookOpen className="size-4 stroke-[0.75]" />
+                <span className="text-xs leading-4.5">{course.lessonsCount} Lessons</span>
+              </li>
+              <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
+                <Clock className="size-4" />
+                <span className="text-xs leading-4.5">{calculateMinutes(course.duration || 0)}</span>
+              </li>
+            </>
+          )}
           {course.totalLearners ? (
             <li className="flex max-h-6.5 items-center gap-1 rounded-full pt-1 pb-1 leading-4.5 text-secondary">
               <GraduationHat className="size-4" />
@@ -57,7 +81,7 @@ const CourseCard = ({ course }: { course: CourseType }) => {
           {course.title}
         </Link>
         <small className="mt-2 block text-sm leading-5 tracking-sm text-secondary">
-          By {course.instructor.name}
+          {course.isBundle ? "Multi-Course Series • Verified Credential" : `Level: ${course.level || "All Levels"}`}
         </small>
 
         <div className="mt-7 flex items-center justify-between">

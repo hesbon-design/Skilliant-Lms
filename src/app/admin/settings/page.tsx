@@ -17,7 +17,7 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="p-6 sm:p-8 space-y-8 max-w-6xl mx-auto">
+    <div className="space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white shadow-xl">
@@ -30,7 +30,7 @@ export default function AdminSettingsPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
           Super Admin Platform Settings
         </h1>
       </div>

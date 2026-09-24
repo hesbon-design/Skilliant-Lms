@@ -39,7 +39,7 @@ const SectionTitle = ({
       ) : null}
       <h2
         className={cn(
-          "text-[clamp(2rem,1.6087rem+1.7391vw,3rem)] `leading-tight font-semibold tracking-[-0.96px]",
+          "text-[clamp(2rem,1.6087rem+1.7391vw,3rem)] leading-tight font-semibold tracking-[-0.96px]",
           titleClassName,
         )}
       >
