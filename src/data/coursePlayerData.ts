@@ -75,18 +75,6 @@ export interface LiveClass {
   agenda?: string[];
 }
 
-export interface GradeItem {
-  id: string;
-  title: string;
-  type: "quiz" | "assignment";
-  dueDate?: string;
-  maxMarks: number;
-  passMarks: number;
-  earnedMarks?: number;
-  status: "passed" | "failed" | "pending" | "not_attempted";
-  submittedDate?: string;
-}
-
 export interface CourseInfoData {
   lastUpdated: string;
   author: string;
@@ -117,7 +105,6 @@ export interface CoursePlayerData {
   resources: { name: string; url: string; size?: string; type?: string }[];
   announcements?: CourseAnnouncement[];
   liveClasses?: LiveClass[];
-  gradebook?: GradeItem[];
   courseInfo?: CourseInfoData;
 }
 
@@ -326,28 +313,6 @@ const nutritionCourse: CoursePlayerData = {
       ],
     },
   ],
-  gradebook: [
-    {
-      id: "grade-1",
-      title: "Meal Planning & Nutrition Assessment",
-      type: "quiz",
-      maxMarks: 3,
-      passMarks: 2,
-      earnedMarks: 3,
-      status: "passed",
-      submittedDate: "Sep 11, 2026",
-    },
-    {
-      id: "grade-2",
-      title: "Create Your Personal 7-Day Meal Plan",
-      type: "assignment",
-      maxMarks: 10,
-      passMarks: 6,
-      earnedMarks: undefined,
-      status: "pending",
-      dueDate: "Sep 19, 2026",
-    },
-  ],
 };
 
 const freelanceCourse: CoursePlayerData = {
@@ -487,28 +452,6 @@ const freelanceCourse: CoursePlayerData = {
         "How to handle price objections smoothly",
         "Contracts: payment terms, retainers, and scope creep",
       ],
-    },
-  ],
-  gradebook: [
-    {
-      id: "grade-fl-1",
-      title: "Freelance Fundamentals Quiz",
-      type: "quiz",
-      maxMarks: 3,
-      passMarks: 2,
-      earnedMarks: 1,
-      status: "failed",
-      submittedDate: "Sep 11, 2026",
-    },
-    {
-      id: "grade-fl-2",
-      title: "Build Your Freelance Foundation",
-      type: "assignment",
-      maxMarks: 10,
-      passMarks: 6,
-      earnedMarks: undefined,
-      status: "pending",
-      dueDate: "Sep 19, 2026",
     },
   ],
   courseInfo: {
@@ -1165,28 +1108,6 @@ coursePlayerData["javascript-mastery"] = {
       ],
     },
   ],
-  gradebook: [
-    {
-      id: "grade-js-1",
-      title: "JavaScript Foundations & Closures Quiz",
-      type: "quiz",
-      maxMarks: 10,
-      passMarks: 7,
-      earnedMarks: 9,
-      status: "passed",
-      submittedDate: "Sep 9, 2026",
-    },
-    {
-      id: "grade-js-2",
-      title: "Build an Asynchronous Data Fetcher App",
-      type: "assignment",
-      maxMarks: 20,
-      passMarks: 14,
-      earnedMarks: undefined,
-      status: "pending",
-      dueDate: "Sep 25, 2026",
-    },
-  ],
 };
 
 // Universal helper that guarantees ANY valid course slug returns a rich CoursePlayerData
@@ -1367,28 +1288,6 @@ export function getCoursePlayerData(slug: string): CoursePlayerData {
           "Live code & project problem solving",
           "Open Q&A for all students",
         ],
-      },
-    ],
-    gradebook: [
-      {
-        id: `grade-${slug}-1`,
-        title: `${title} Foundations Assessment`,
-        type: "quiz",
-        maxMarks: 3,
-        passMarks: 2,
-        earnedMarks: 3,
-        status: "passed",
-        submittedDate: "Sep 10, 2026",
-      },
-      {
-        id: `grade-${slug}-2`,
-        title: `${title} Practical Capstone Assignment`,
-        type: "assignment",
-        maxMarks: 20,
-        passMarks: 14,
-        earnedMarks: undefined,
-        status: "not_attempted",
-        dueDate: "Sep 30, 2026",
       },
     ],
   };

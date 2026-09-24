@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo, LogoutIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import RoleSwitcher from "@/components/RoleSwitcher";
 
 // Sidebar SVG Icons matching the design system
 const HomeIcon = () => (
@@ -44,36 +45,7 @@ const AssignmentsIcon = () => (
   </svg>
 );
 
-const DiscussionsIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-    <circle cx="12" cy="17" r="0.5" fill="currentColor" />
-  </svg>
-);
 
-const LiveClassesIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="23 7 16 12 23 17 23 7" />
-    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-  </svg>
-);
-
-const AnalyticsIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="3" width="20" height="14" rx="2" />
-    <line x1="8" y1="21" x2="16" y2="21" />
-    <line x1="12" y1="17" x2="12" y2="21" />
-    <polyline points="6 12 10 8 14 11 18 7" />
-  </svg>
-);
-
-const GradebookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 11l3 3L22 4" />
-    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-  </svg>
-);
 
 const ResourcesIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -155,17 +127,21 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
+const GradebookNavIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+    <path d="m9 11 2 2 4-4" />
+  </svg>
+);
+
 const baseStudentNavItems: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: <HomeIcon /> },
   { label: "Courses", href: "/dashboard/courses", icon: <CoursesIcon /> },
   { label: "Announcements", href: "/dashboard/announcements", icon: <AnnouncementsIcon /> },
+  { label: "Gradebook", href: "/dashboard/gradebook", icon: <GradebookNavIcon /> },
   { label: "Quiz Attempts", href: "/dashboard/quiz-attempts", icon: <QuizAttemptsIcon /> },
   { label: "Assignments", href: "/dashboard/assignments", icon: <AssignmentsIcon /> },
   { label: "Certificates & Awards", href: "/dashboard/certificates", icon: <CertificateIcon /> },
-  { label: "Gradebook", href: "/dashboard/gradebook", icon: <GradebookIcon /> },
-  { label: "Discussions", href: "/dashboard/discussions", icon: <DiscussionsIcon /> },
-  { label: "Live Classes", href: "/dashboard/live-classes", icon: <LiveClassesIcon /> },
-  { label: "Analytics", href: "/dashboard/analytics", icon: <AnalyticsIcon /> },
   { label: "Resources", href: "/dashboard/resources", icon: <ResourcesIcon /> },
 ];
 
@@ -183,9 +159,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const isCompanyRoute = pathname.startsWith("/dashboard/company");
 
-  // Dynamic RBAC: Defaults to "STUDENT" for learner dashboard, and "COMPANY_ADMIN" on /dashboard/company
-  const [selectedRole, setSelectedRole] = useState<"STUDENT" | "COMPANY_ADMIN" | null>(null);
-  const role = isCompanyRoute ? "COMPANY_ADMIN" : (selectedRole ?? "STUDENT");
+  const role = isCompanyRoute ? "COMPANY_ADMIN" : "STUDENT";
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sidebarNavRef = useRef<HTMLDivElement>(null);
@@ -221,28 +195,6 @@ export default function DashboardLayout({
           <Link href="/" className="inline-block py-1 px-2">
             <Logo className="text-purple-600" />
           </Link>
-
-          {/* Role Status Tag */}
-          <div className="mt-4 rounded-xl border border-purple-100 bg-purple-50/60 p-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-purple-700">
-                {role === "COMPANY_ADMIN" ? "Company Portal" : "Student Portal"}
-              </span>
-              <span className="size-2 rounded-full bg-emerald-500" />
-            </div>
-            <p className="mt-1 text-sm font-semibold text-gray-800 truncate">
-              {role === "COMPANY_ADMIN" ? "Apex Industrial Logistics" : "Alex Mercer"}
-            </p>
-            {!isCompanyRoute && (
-              <button
-                type="button"
-                onClick={() => setSelectedRole(role === "STUDENT" ? "COMPANY_ADMIN" : "STUDENT")}
-                className="mt-2 text-xs font-semibold text-purple-600 hover:text-purple-800 hover:underline transition-colors block text-left"
-              >
-                {role === "STUDENT" ? "Switch to Company Admin →" : "Switch to Student View →"}
-              </button>
-            )}
-          </div>
 
           {/* Elevated Company Controls Section */}
           {role === "COMPANY_ADMIN" && (
@@ -316,12 +268,6 @@ export default function DashboardLayout({
         {/* Bottom Actions */}
         <div className="shrink-0 space-y-2 pt-4 border-t border-gray-100">
           <Link
-            href="/admin"
-            className="flex items-center gap-2.5 rounded-xl border border-purple-200 bg-purple-50/50 px-3.5 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-100/70 transition-colors"
-          >
-            <span>Switch to Studio / Admin</span>
-          </Link>
-          <Link
             href="/"
             className="flex items-center justify-center rounded-xl border border-gray-200 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
           >
@@ -341,14 +287,8 @@ export default function DashboardLayout({
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Desktop Persistent Header Bar */}
         <header className="hidden lg:flex h-16 shrink-0 items-center justify-between border-b border-gray-100 bg-white px-8">
-          {/* Functional Search Bar */}
-          <div className="relative">
-            <SearchIcon className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search courses, lessons, resources..."
-              className="w-80 rounded-xl border border-gray-200 bg-gray-50/50 py-1.5 pl-10 pr-4 text-sm text-gray-700 placeholder:text-gray-400 focus:border-purple-500 focus:bg-white focus:outline-none transition-colors"
-            />
+          <div className="flex items-center gap-3">
+            <RoleSwitcher />
           </div>
 
           <div className="flex items-center gap-4">
@@ -463,19 +403,6 @@ export default function DashboardLayout({
                 </button>
               </div>
 
-              {/* Role Indicator in Mobile Drawer */}
-              <div className="mt-3 rounded-xl border border-purple-100 bg-purple-50/60 p-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-purple-700">
-                    {role === "COMPANY_ADMIN" ? "Company Admin Mode" : "Learner Mode"}
-                  </span>
-                  <span className="size-2 rounded-full bg-green-500 animate-pulse" />
-                </div>
-                <p className="mt-0.5 text-xs font-semibold text-gray-800 truncate">
-                  {role === "COMPANY_ADMIN" ? "Apex Industrial Logistics" : "Alex Mercer (Learner)"}
-                </p>
-              </div>
-
               {/* Scrollable Nav List */}
               <div className="flex-1 overflow-y-auto mt-3 pr-1 space-y-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {role === "COMPANY_ADMIN" && (
@@ -541,13 +468,10 @@ export default function DashboardLayout({
 
               {/* Bottom Actions */}
               <div className="shrink-0 space-y-2 pt-3 border-t border-gray-100">
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-purple-200 bg-purple-50/60 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-100/70 transition-colors"
-                >
-                  Switch to Studio / Admin
-                </Link>
+                <div className="mb-1">
+                  <p className="px-1 mb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">Workspace</p>
+                  <RoleSwitcher size="sm" className="w-full justify-between" />
+                </div>
                 <Link
                   href="/"
                   onClick={() => setMobileMenuOpen(false)}

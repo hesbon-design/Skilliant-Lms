@@ -1,10 +1,9 @@
-"use client";
 import { Slot } from "@/lib/slot";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import { ButtonHTMLAttributes, RefObject } from "react";
+import { ButtonHTMLAttributes } from "react";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "group inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full text-sm tracking-sm font-medium leading-5 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
@@ -28,11 +27,10 @@ const buttonVariants = cva(
   },
 );
 
-interface ButtonProps
+export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  ref?: RefObject<any>;
 }
 
 const Button = ({
@@ -41,13 +39,11 @@ const Button = ({
   size,
   children,
   asChild,
-  ref,
   ...props
 }: ButtonProps) => {
   const Comp = asChild ? Slot : "button";
   return (
     <Comp
-      ref={ref}
       {...props}
       className={cn(buttonVariants({ variant, size, className }))}
     >
@@ -57,3 +53,4 @@ const Button = ({
 };
 
 export default Button;
+export { Button };

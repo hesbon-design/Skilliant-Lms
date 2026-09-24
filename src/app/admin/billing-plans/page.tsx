@@ -12,10 +12,10 @@ import {
 
 export default function AdminBillingPlansPage() {
   return (
-    <div className="p-6 sm:p-8 space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
           Billing &amp; Enrollment Architecture
         </h1>
       </div>

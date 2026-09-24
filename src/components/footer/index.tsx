@@ -19,7 +19,6 @@ const footerData = [
       { text: "All Courses", url: "/courses" },
       { text: "About", url: "/about" },
       { text: "Contact", url: "/contact" },
-      { text: "Blog", url: "/blog" },
     ],
   },
   {

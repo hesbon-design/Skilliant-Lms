@@ -94,11 +94,162 @@ const GraduationIcon = () => (
   </svg>
 );
 
+const TicketIcon = ({ className = "size-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+    <path d="M13 5v2" />
+    <path d="M13 17v2" />
+    <path d="M13 11v2" />
+  </svg>
+);
+
+const CheckCircleIcon = ({ className = "size-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="9 12 11 14 15 10" />
+  </svg>
+);
+
+const CloseIcon = ({ className = "size-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+interface VerifiedVoucherData {
+  code: string;
+  programTitle: string;
+  sponsoredBy: string;
+  slug: string;
+  instructor: string;
+  thumbnail: string;
+  category: string;
+  lessonsCount: number;
+  value: number;
+}
+
 export default function DashboardCoursesPage() {
   const [courses, setCourses] = useState<EnrolledCourse[]>(mockEnrolledCourses);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "in_progress" | "completed">("all");
   const [sortBy, setSortBy] = useState<"recent" | "title" | "progress">("recent");
+
+  // Voucher Redemption Flow State
+  const [isVoucherModalOpen, setIsVoucherModalOpen] = useState(false);
+  const [voucherInput, setVoucherInput] = useState("");
+  const [voucherError, setVoucherError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifiedVoucher, setVerifiedVoucher] = useState<VerifiedVoucherData | null>(null);
+  const [redeemedBanner, setRedeemedBanner] = useState<{
+    title: string;
+    sponsor: string;
+    slug: string;
+  } | null>(null);
+
+  const handleVerifyVoucher = (codeToVerify?: string) => {
+    setVoucherError("");
+    const targetCode = (codeToVerify || voucherInput).trim().toUpperCase();
+    if (!targetCode) {
+      setVoucherError("Please enter a voucher code.");
+      return;
+    }
+
+    setIsVerifying(true);
+    setTimeout(() => {
+      setIsVerifying(false);
+      if (targetCode === "SKL-APEX-2026") {
+        setVerifiedVoucher({
+          code: "SKL-APEX-2026",
+          programTitle: "Industrial Machine Operator Track",
+          sponsoredBy: "Apex Industrial Logistics",
+          slug: "nextjs-fullstack-bootcamp",
+          instructor: "Michael Lee, Certified Equipment Inspector",
+          thumbnail: "/images/courses/img-2.png",
+          category: "Heavy Machinery",
+          lessonsCount: 32,
+          value: 450,
+        });
+      } else if (targetCode === "VOUCHER-DEV-100") {
+        setVerifiedVoucher({
+          code: "VOUCHER-DEV-100",
+          programTitle: "Complete React Developer Course",
+          sponsoredBy: "TechCorp Global Academy",
+          slug: "complete-react-developer",
+          instructor: "John Doe",
+          thumbnail: "/images/courses/img-1.png",
+          category: "Software Development",
+          lessonsCount: 24,
+          value: 120,
+        });
+      } else if (targetCode === "APEX-FL-FREE") {
+        setVerifiedVoucher({
+          code: "APEX-FL-FREE",
+          programTitle: "Forklift Safety & Zero-Fault Inspection",
+          sponsoredBy: "Apex Industrial Logistics",
+          slug: "commercial-fleet-driving",
+          instructor: "Capt. Marcus Vance",
+          thumbnail: "/images/courses/course-01.jpg",
+          category: "Fleet Logistics",
+          lessonsCount: 16,
+          value: 200,
+        });
+      } else if (targetCode.startsWith("SKL-") || targetCode.startsWith("VOUCH-")) {
+        setVerifiedVoucher({
+          code: targetCode,
+          programTitle: "Commercial Fleet Driving & Advanced Hazard Overtraining",
+          sponsoredBy: "Enterprise Training Partner",
+          slug: "secret-tips-behind-perfect-diet-meal-plan",
+          instructor: "Capt. Marcus Vance, Master Fleet Director",
+          thumbnail: "/images/courses/course-01.jpg",
+          category: "Driving School",
+          lessonsCount: 20,
+          value: 350,
+        });
+      } else {
+        setVoucherError("Invalid or expired voucher code. Try demo voucher: SKL-APEX-2026 or VOUCHER-DEV-100");
+      }
+    }, 350);
+  };
+
+  const handleClaimVoucher = () => {
+    if (!verifiedVoucher) return;
+
+    const alreadyEnrolled = courses.some(
+      (c) => c.slug === verifiedVoucher.slug || c.title === verifiedVoucher.programTitle
+    );
+
+    if (alreadyEnrolled) {
+      setVoucherError("You are already enrolled in this course. Access it from your dashboard.");
+      return;
+    }
+
+    const newEnrolledCourse: EnrolledCourse = {
+      id: `enrolled-${Date.now()}`,
+      slug: verifiedVoucher.slug,
+      title: verifiedVoucher.programTitle,
+      instructor: verifiedVoucher.instructor,
+      enrolledDate: "Today",
+      thumbnail: verifiedVoucher.thumbnail,
+      progress: 0,
+      completedLessons: 0,
+      totalLessons: verifiedVoucher.lessonsCount,
+      status: "in_progress",
+      lastAccessed: "Just now",
+      nextLessonTitle: "Module 1: Getting Started & Course Overview",
+      category: verifiedVoucher.category,
+    };
+
+    setCourses((prev) => [newEnrolledCourse, ...prev]);
+    setRedeemedBanner({
+      title: verifiedVoucher.programTitle,
+      sponsor: verifiedVoucher.sponsoredBy,
+      slug: verifiedVoucher.slug,
+    });
+    setIsVoucherModalOpen(false);
+    setVerifiedVoucher(null);
+    setVoucherInput("");
+  };
 
   // Filtering & Sorting
   const filteredCourses = useMemo(() => {
@@ -135,15 +286,63 @@ export default function DashboardCoursesPage() {
           </p>
         </div>
 
-        {/* Action button to public catalog */}
-        <Link
-          href="/courses"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors"
-        >
-          <span>Explore More Courses</span>
-          <span>→</span>
-        </Link>
+        {/* Header Action Buttons */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              setIsVoucherModalOpen(true);
+              setVoucherInput("");
+              setVoucherError("");
+              setVerifiedVoucher(null);
+            }}
+            className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-purple-50 px-4 py-2.5 text-sm font-semibold text-purple-700 shadow-2xs hover:bg-purple-100 transition-colors whitespace-nowrap shrink-0"
+          >
+            <TicketIcon className="size-4" />
+            <span className="whitespace-nowrap shrink-0">Redeem a Voucher</span>
+          </button>
+
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-2xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
+          >
+            <span className="whitespace-nowrap shrink-0">Explore More Courses</span>
+            <span>→</span>
+          </Link>
+        </div>
       </div>
+
+      {/* Redeemed Voucher Success Banner */}
+      {redeemedBanner && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-purple-50 p-4 sm:p-5 shadow-2xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-2xs">
+              <CheckCircleIcon className="size-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900">
+                Voucher Redeemed Successfully!
+              </h4>
+              <p className="text-xs text-gray-600 mt-0.5">
+                You have been enrolled in <strong className="text-gray-900">{redeemedBanner.title}</strong> sponsored by <strong className="text-purple-700">{redeemedBanner.sponsor}</strong>.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <Link
+              href={`/learn/${redeemedBanner.slug}`}
+              className="rounded-xl bg-purple-600 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
+            >
+              Start Learning Now →
+            </Link>
+            <button
+              onClick={() => setRedeemedBanner(null)}
+              className="rounded-xl p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+            >
+              <CloseIcon className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* When student has ZERO enrolled courses: Full Empty State */}
       {courses.length === 0 ? (
@@ -158,12 +357,24 @@ export default function DashboardCoursesPage() {
             Discover hundreds of expert-led courses in web development, design, marketing, and business.
             Enroll today to get lifetime access to video lessons, interactive quizzes, and verified certificates.
           </p>
-          <div className="mt-8 flex items-center justify-center">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => {
+                setIsVoucherModalOpen(true);
+                setVoucherInput("");
+                setVoucherError("");
+                setVerifiedVoucher(null);
+              }}
+              className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-purple-50 px-5 py-3 text-sm font-semibold text-purple-700 shadow-2xs hover:bg-purple-100 transition-colors whitespace-nowrap shrink-0"
+            >
+              <TicketIcon className="size-4" />
+              <span className="whitespace-nowrap shrink-0">Redeem a Voucher</span>
+            </button>
             <Link
               href="/courses"
-              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
             >
-              <span>Browse Courses Catalog</span>
+              <span className="whitespace-nowrap shrink-0">Browse Courses Catalog</span>
               <span>→</span>
             </Link>
           </div>
@@ -397,6 +608,183 @@ export default function DashboardCoursesPage() {
             </div>
           )}
         </>
+      )}
+
+      {/* Redeem Voucher Interactive Modal */}
+      {isVoucherModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-7 shadow-xl border border-gray-100 animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shadow-2xs">
+                  <TicketIcon className="size-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Redeem a Voucher
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Unlock sponsored courses with zero personal tuition
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setIsVoucherModalOpen(false);
+                  setVerifiedVoucher(null);
+                  setVoucherError("");
+                }}
+                className="rounded-xl p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              >
+                <CloseIcon className="size-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="mt-5 space-y-4">
+              {!verifiedVoucher ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleVerifyVoucher();
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Enter Voucher Code
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          placeholder="e.g. SKL-APEX-2026"
+                          value={voucherInput}
+                          onChange={(e) => {
+                            setVoucherInput(e.target.value.toUpperCase());
+                            if (voucherError) setVoucherError("");
+                          }}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 font-mono text-sm font-bold uppercase tracking-wider text-gray-900 placeholder:normal-case placeholder:font-normal placeholder:tracking-normal placeholder:text-gray-400 focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-purple-600"
+                          autoFocus
+                        />
+                        {voucherInput && (
+                          <button
+                            type="button"
+                            onClick={() => setVoucherInput("")}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isVerifying || !voucherInput.trim()}
+                        className="inline-flex items-center justify-center rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-2xs hover:bg-purple-700 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
+                      >
+                        {isVerifying ? "Verifying..." : "Verify Code"}
+                      </button>
+                    </div>
+
+                    {voucherError && (
+                      <p className="mt-2 text-xs font-medium text-red-600 flex items-center gap-1.5">
+                        <span>⚠</span> {voucherError}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Quick Sample Vouchers */}
+                  <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 space-y-2">
+                    <p className="text-xs font-semibold text-gray-600">
+                      Sample Vouchers (Click to autofill):
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { code: "SKL-APEX-2026", label: "Heavy Machinery Track" },
+                        { code: "VOUCHER-DEV-100", label: "React Developer Bootcamp" },
+                        { code: "APEX-FL-FREE", label: "Forklift Safety Inspection" },
+                      ].map((v) => (
+                        <button
+                          key={v.code}
+                          type="button"
+                          onClick={() => {
+                            setVoucherInput(v.code);
+                            handleVerifyVoucher(v.code);
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-purple-200 bg-white px-2.5 py-1.5 text-xs font-mono font-bold text-purple-700 hover:bg-purple-50 hover:border-purple-300 transition-colors whitespace-nowrap shrink-0 shadow-2xs"
+                        >
+                          <span>{v.code}</span>
+                          <span className="text-gray-400 font-normal font-sans text-[11px]">({v.label})</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </form>
+              ) : (
+                /* Voucher Verified Preview Card */
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-purple-200 bg-purple-50/50 p-5 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
+                        <CheckCircleIcon className="size-3.5" />
+                        <span>Valid Voucher Verified</span>
+                      </span>
+                      <span className="font-mono text-xs font-bold text-purple-700 bg-white px-2.5 py-1 rounded-md border border-purple-200 shadow-2xs">
+                        {verifiedVoucher.code}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="inline-block rounded-md bg-purple-100 px-2 py-0.5 text-xs font-semibold text-purple-800 uppercase tracking-wider mb-1">
+                        {verifiedVoucher.category}
+                      </span>
+                      <h4 className="text-base font-bold text-gray-900">
+                        {verifiedVoucher.programTitle}
+                      </h4>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        Instructor: {verifiedVoucher.instructor} • {verifiedVoucher.lessonsCount} Modules
+                      </p>
+                    </div>
+
+                    <div className="border-t border-purple-200/60 pt-3 flex items-center justify-between text-xs">
+                      <div>
+                        <span className="text-gray-500">Sponsoring Organization:</span>
+                        <p className="font-semibold text-gray-900">{verifiedVoucher.sponsoredBy}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-gray-500">Student Balance:</span>
+                        <p className="font-bold text-green-600 text-sm">$0.00 (100% Covered)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setVerifiedVoucher(null);
+                        setVoucherError("");
+                      }}
+                      className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap shrink-0"
+                    >
+                      Use Different Code
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClaimVoucher}
+                      className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-2xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
+                    >
+                      <span>Claim &amp; Enroll Course</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

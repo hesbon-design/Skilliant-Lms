@@ -12,18 +12,6 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; amount: number; type: string } | null>(null);
   const [couponError, setCouponError] = useState("");
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const newQty = Math.max(1, item.quantity + delta);
-          return { ...item, quantity: newQty };
-        }
-        return item;
-      })
-    );
-  };
-
   const removeItem = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
@@ -42,8 +30,8 @@ export default function CartPage() {
     }
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const originalSubtotal = cartItems.reduce((acc, item) => acc + item.originalPrice * item.quantity, 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const originalSubtotal = cartItems.reduce((acc, item) => acc + item.originalPrice, 0);
   const totalSavings = originalSubtotal - subtotal;
 
   let discountAmount = 0;
@@ -56,6 +44,7 @@ export default function CartPage() {
   }
 
   const finalTotal = Math.max(0, subtotal - discountAmount);
+  const formatCurrency = (val: number) => `$${val.toFixed(2)}`;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24 pt-10">
@@ -75,12 +64,12 @@ export default function CartPage() {
                 Shopping Cart
               </h1>
               <p className="mt-1 text-sm text-gray-500">
-                Review your selected courses, seat allocations, and learning track bundles.
+                Review your selected courses and learning track bundles.
               </p>
             </div>
             {cartItems.length > 0 && (
               <span className="inline-flex items-center rounded-full bg-purple-50 px-3.5 py-1 text-xs font-semibold text-purple-700 border border-purple-200">
-                {cartItems.reduce((acc, item) => acc + item.quantity, 0)} Total Seat(s)
+                {cartItems.length} {cartItems.length === 1 ? "Program" : "Programs"}
               </span>
             )}
           </div>
@@ -103,7 +92,7 @@ export default function CartPage() {
             <div className="mt-6 flex items-center justify-center gap-4">
               <Link
                 href="/courses"
-                className="inline-flex items-center justify-center rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors"
+                className="inline-flex items-center justify-center rounded-xl bg-[#7D52F4] px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
               >
                 Browse Course Catalog
               </Link>
@@ -115,8 +104,8 @@ export default function CartPage() {
             <div className="lg:col-span-8 space-y-4">
               <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-xs">
                 <div className="border-b border-gray-100 bg-gray-50/60 px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 flex justify-between">
-                  <span>Enrolled Program</span>
-                  <span className="hidden sm:inline">Seats &amp; Pricing</span>
+                  <span>Selected Program</span>
+                  <span className="hidden sm:inline">Price</span>
                 </div>
 
                 <div className="divide-y divide-gray-100">
@@ -156,45 +145,15 @@ export default function CartPage() {
                         </div>
                       </div>
 
-                      {/* Seats & Price */}
+                      {/* Price & Action */}
                       <div className="flex items-center justify-between w-full sm:w-auto sm:gap-6 border-t border-gray-50 sm:border-0 pt-3 sm:pt-0">
-                        {/* Quantity Counter for Seats */}
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-500 font-medium hidden sm:inline">Seats:</span>
-                          <div className="flex items-center rounded-xl border border-gray-200 bg-gray-50/50 p-0.5">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="size-7 rounded-lg text-gray-600 hover:bg-white flex items-center justify-center font-bold text-sm transition-colors"
-                              title="Decrease seats"
-                            >
-                              -
-                            </button>
-                            <span className="w-8 text-center text-sm font-bold text-gray-900">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="size-7 rounded-lg text-gray-600 hover:bg-white flex items-center justify-center font-bold text-sm transition-colors"
-                              title="Increase seats"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Price Breakdown */}
                         <div className="text-right">
                           <div className="text-base font-extrabold text-gray-900">
-                            ${item.price * item.quantity}
+                            {formatCurrency(item.price)}
                           </div>
                           {item.originalPrice > item.price && (
                             <div className="text-xs text-gray-400 line-through">
-                              ${item.originalPrice * item.quantity}
-                            </div>
-                          )}
-                          {item.quantity > 1 && (
-                            <div className="text-sm text-gray-500">
-                              ${item.price} / seat
+                              {formatCurrency(item.originalPrice)}
                             </div>
                           )}
                         </div>
@@ -229,7 +188,7 @@ export default function CartPage() {
                     </div>
                     <button
                       type="submit"
-                      className="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 transition-colors whitespace-nowrap"
+                      className="rounded-xl bg-[#7D52F4] px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
                     >
                       Apply Coupon
                     </button>
@@ -242,7 +201,7 @@ export default function CartPage() {
                       <span>✓ Coupon &ldquo;{appliedCoupon.code}&rdquo; applied successfully!</span>
                       <button
                         onClick={() => setAppliedCoupon(null)}
-                        className="text-gray-500 hover:text-red-600 text-sm underline"
+                        className="text-gray-500 hover:text-red-600 text-sm underline whitespace-nowrap shrink-0"
                       >
                         Remove
                       </button>
@@ -251,17 +210,14 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* B2B Employer Callout */}
-              <div className="rounded-2xl border border-purple-200 bg-purple-50/50 p-5 flex items-start gap-4">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-purple-600 text-white shrink-0 font-bold">
-                  🏢
+              {/* Voucher Callout */}
+              <div className="rounded-2xl border border-purple-200 bg-purple-50/50 p-4 sm:p-5 flex items-center gap-3.5">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-purple-600 text-white shrink-0 font-bold text-base">
+                  🎟️
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-gray-900">Enrolling a Corporate Team or Department?</h4>
-                  <p className="mt-1 text-sm text-gray-600 leading-relaxed">
-                    Received a Company Voucher from your employer or institution? You can redeem voucher codes for 100% discount on the next screen, or select <strong className="text-purple-700">Manual / Pay Later</strong> at checkout to generate an official institutional invoice.
-                  </p>
-                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  Have a voucher? You can redeem your voucher code directly on the checkout screen to unlock 100% course access.
+                </p>
               </div>
             </div>
 
@@ -273,21 +229,21 @@ export default function CartPage() {
                 <div className="mt-5 space-y-3.5 border-b border-gray-100 pb-5 text-sm">
                   <div className="flex items-center justify-between text-gray-600">
                     <span>Original Price</span>
-                    <span className="line-through text-gray-400">${originalSubtotal}</span>
+                    <span className="line-through text-gray-400">{formatCurrency(originalSubtotal)}</span>
                   </div>
                   <div className="flex items-center justify-between text-gray-600">
                     <span>Catalog Discount</span>
-                    <span className="font-semibold text-green-600">-${totalSavings}</span>
+                    <span className="font-semibold text-green-600">-{formatCurrency(totalSavings)}</span>
                   </div>
                   <div className="flex items-center justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-semibold text-gray-900">${subtotal}</span>
+                    <span className="font-semibold text-gray-900">{formatCurrency(subtotal)}</span>
                   </div>
 
                   {appliedCoupon && (
                     <div className="flex items-center justify-between text-green-600 font-medium">
                       <span>Coupon Discount ({appliedCoupon.code})</span>
-                      <span>-${discountAmount.toFixed(2)}</span>
+                      <span>-{formatCurrency(discountAmount)}</span>
                     </div>
                   )}
 
@@ -299,19 +255,19 @@ export default function CartPage() {
 
                 <div className="mt-5 flex items-baseline justify-between">
                   <span className="text-base font-bold text-gray-900">Total Due</span>
-                  <span className="text-2xl font-extrabold text-purple-600">${finalTotal.toFixed(2)}</span>
+                  <span className="text-2xl font-extrabold text-purple-600">{formatCurrency(finalTotal)}</span>
                 </div>
 
                 <div className="mt-6 space-y-3">
                   <Link
                     href="/checkout"
-                    className="flex w-full items-center justify-center rounded-xl bg-purple-600 py-3.5 text-sm font-bold text-white shadow-xs hover:bg-purple-700 transition-colors"
+                    className="flex w-full items-center justify-center rounded-xl bg-[#7D52F4] py-3.5 text-sm font-bold text-white shadow-xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
                   >
                     Proceed to Checkout →
                   </Link>
                   <Link
                     href="/courses"
-                    className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex w-full items-center justify-center rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap shrink-0"
                   >
                     ← Continue Browsing Courses
                   </Link>
@@ -321,7 +277,7 @@ export default function CartPage() {
                 <div className="mt-6 space-y-2.5 border-t border-gray-100 pt-5 text-sm text-gray-500">
                   <div className="flex items-center gap-2">
                     <span className="text-purple-600 font-bold">🔒</span>
-                    <span>256-Bit SSL Bank-Grade Secure Checkout</span>
+                    <span>Bank-Grade 256-Bit SSL Encryption</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-purple-600 font-bold">📜</span>

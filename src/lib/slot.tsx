@@ -1,34 +1,22 @@
-import React, { ReactElement, ReactNode, Ref } from "react";
+import React, { ReactElement, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type SlotProps = {
-  children: ReactNode;
-  ref?: Ref<any>;
+  children?: ReactNode;
+  className?: string;
+  [key: string]: any;
 };
 
-export function Slot({ children, ref, ...props }: SlotProps) {
+export function Slot({ children, className, ...props }: SlotProps) {
   if (!React.isValidElement(children)) {
     return null;
   }
 
-  const originalRef = (children as any).ref;
+  const childProps = (children.props as any) || {};
 
   return React.cloneElement(children as ReactElement<any>, {
     ...props,
-    ref: (node: HTMLElement) => {
-      // Forward outer ref
-      if (typeof ref === "function") {
-        ref(node);
-      } else if (ref) {
-        (ref as React.MutableRefObject<HTMLElement | null>).current = node;
-      }
-
-      // Preserve child's original ref
-      if (typeof originalRef === "function") {
-        originalRef(node);
-      } else if (originalRef && typeof originalRef === "object") {
-        (originalRef as React.MutableRefObject<HTMLElement | null>).current =
-          node;
-      }
-    },
+    ...childProps,
+    className: cn(className, childProps.className),
   });
 }

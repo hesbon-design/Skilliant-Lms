@@ -1,26 +1,15 @@
 import SectionTitle from "@/components/sectionTitle";
 import Button from "@/components/ui/button";
 import ButtonArrow from "@/components/ui/buttonArrow";
-import {
-  BookOpen,
-  Clock,
-  FileAlt,
-  GraduationHat,
-  LifeRing,
-  SingleStrong,
-} from "@/lib/icons";
 import Image from "next/image";
 import Link from "next/link";
 import CourseContent from "./courseContent";
-import InstructorInfo from "./instructorInfo";
 import Cta from "@/components/cta";
-import CoursseReview from "./coursseReview";
-import AddReview from "./addReview";
 import BackButton from "./backButton";
 import EnrolledTabs from "./enrolledTabs";
+import BundleDetailsView from "./bundleDetailsView";
 import { coursesData } from "@/components/courses/courseData";
 import { notFound } from "next/navigation";
-import { calculateMinutes, formatViews } from "@/lib/utils";
 import { siteName } from "@/utils/envExport";
 import { Metadata } from "next";
 
@@ -56,6 +45,15 @@ const CourseDetails = async ({
     notFound();
   }
 
+  if (course.isBundle) {
+    return (
+      <main>
+        <BundleDetailsView course={course} />
+        <Cta className="pb-16 sm:pb-20 lg:pb-28" />
+      </main>
+    );
+  }
+
   return (
     <main>
       <section className="bg-gray-50 pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pb-28">
@@ -75,24 +73,23 @@ const CourseDetails = async ({
                   >
                     {course.title}
                   </SectionTitle>
-                  {/* instructor name, image and course level */}
-                  <div className="flex items-center justify-between pt-8">
+                  {/* course level and stats */}
+                  <div className="flex items-center justify-between pt-6">
                     <div className="flex items-center gap-2">
-                      <Image
-                        width={32}
-                        height={32}
-                        src={"/images/instructor/avatar.png"}
-                        alt={course.instructor.name}
-                        className="size-8 rounded-full object-cover"
-                      />
-                      <span className="leading-6 tracking-base text-secondary">
-                        {course.instructor.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <SingleStrong />
-                      <span className="leading-6 text-secondary capitalize">
+                      <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
                         {course.level || "Intermediate"}
+                      </span>
+                      {course.isCertificationProvide && (
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          Verified Certificate
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-700">
+                      <span className="text-yellow-400">★</span>
+                      <span>5.0</span>
+                      <span className="text-xs text-gray-400 font-normal">
+                        ({course.totalLearners ? `${course.totalLearners} learners` : "Accredited"})
                       </span>
                     </div>
                   </div>
@@ -157,10 +154,6 @@ const CourseDetails = async ({
                       </h4>
                       <CourseContent />
                     </div>
-
-                    <InstructorInfo />
-                    <CoursseReview />
-                    <AddReview />
                   </div>
                 </EnrolledTabs>
               </div>
@@ -208,23 +201,7 @@ const CourseDetails = async ({
                   </div>
                 </div>
 
-                {/* Card 2: A course by */}
-                <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    A course by
-                  </p>
-                  <div className="mt-3.5 flex items-center gap-3.5">
-                    <div className="flex size-11 items-center justify-center rounded-full bg-purple-600 text-base font-bold text-white shadow-xs">
-                      {course.instructor.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h5 className="text-base font-bold text-gray-900">{course.instructor.name}</h5>
-                      <p className="text-sm font-medium text-gray-500">Lead Instructor</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card 3: Material Includes */}
+                {/* Card 2: Material Includes */}
                 <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100">
                   <h4 className="font-bold text-gray-900 text-base">Material Includes</h4>
                   <ul className="mt-4 space-y-3 text-sm font-medium text-gray-700">

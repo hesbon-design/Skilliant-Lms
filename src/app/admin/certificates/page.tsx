@@ -17,10 +17,10 @@ import {
   GridViewIcon,
   TableViewIcon,
   CloseIcon,
-  CheckCircleIcon,
-  CoursesIcon,
   ExternalLinkIcon,
+  SettingsIcon,
 } from "../adminIcons";
+import defaultCertificateSettings from "@/data/certificateSettings.json";
 
 export default function AdminCertificatesPage() {
   const [certificates, setCertificates] = useState<AdminCertificate[]>(initialCertificates);
@@ -33,8 +33,13 @@ export default function AdminCertificatesPage() {
 
   // Modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<AdminCertificate | null>(null);
   const [previewCert, setPreviewCert] = useState<AdminCertificate | null>(null);
+
+  // Governance Settings State
+  const [govSettings, setGovSettings] = useState(defaultCertificateSettings);
+  const [settingsNotice, setSettingsNotice] = useState<string | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -52,12 +57,6 @@ export default function AdminCertificatesPage() {
     status: "Active" as AdminCertificate["status"],
     description: "",
   });
-
-  // KPI Computations
-  const totalCertificates = certificates.length;
-  const activeCertificates = certificates.filter((c) => c.status === "Active").length;
-  const totalAwarded = certificates.reduce((sum, c) => sum + c.issuedCount, 0);
-  const mostAwarded = [...certificates].sort((a, b) => b.issuedCount - a.issuedCount)[0];
 
   // Filtering
   const filteredCertificates = certificates.filter((cert) => {
@@ -235,61 +234,21 @@ export default function AdminCertificatesPage() {
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
-            onClick={handleOpenCreate}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
+            type="button"
+            onClick={() => setIsSettingsModalOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-2xs hover:bg-gray-50 transition-colors whitespace-nowrap shrink-0"
+          >
+            <SettingsIcon className="size-4 shrink-0 text-gray-500" />
+            <span className="whitespace-nowrap">Certificate Settings</span>
+          </button>
+
+          <Link
+            href="/admin/certificates/builder"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#7D52F4] px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
           >
             <PlusIcon className="size-4 shrink-0" />
             <span className="whitespace-nowrap">+ Create Certificate</span>
-          </button>
-        </div>
-      </div>
-
-      {/* KPI Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Configured Certificates</p>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
-              <CertificateIcon className="size-4" />
-            </div>
-          </div>
-          <h3 className="mt-2 text-2xl font-bold text-gray-900">{totalCertificates}</h3>
-          <p className="mt-1 text-sm text-gray-500">{activeCertificates} active across catalog</p>
-        </div>
-
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Trainees Awarded</p>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-              <span className="font-bold text-sm">🎓</span>
-            </div>
-          </div>
-          <h3 className="mt-2 text-2xl font-bold text-emerald-600">{totalAwarded}</h3>
-          <p className="mt-1 text-sm text-gray-500">Verified student credentials issued</p>
-        </div>
-
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Highest Award Volume</p>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
-              <span className="font-bold text-sm">🏆</span>
-            </div>
-          </div>
-          <h3 className="mt-2 text-2xl font-bold text-gray-900">{mostAwarded?.issuedCount || 0}</h3>
-          <p className="mt-1 text-sm text-gray-500 truncate max-w-[200px]">
-            {mostAwarded?.courseTitle || "No issuances yet"}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Credential Verification</p>
-            <div className="flex size-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-              <CheckCircleIcon className="size-4" />
-            </div>
-          </div>
-          <h3 className="mt-2 text-2xl font-bold text-gray-900">100%</h3>
-          <p className="mt-1 text-sm text-gray-500">Tamper-proof verifiable QR registry</p>
+          </Link>
         </div>
       </div>
 
@@ -415,37 +374,40 @@ export default function AdminCertificatesPage() {
                 )}
               >
                 {/* Visual Certificate Card Simulation Preview */}
-                <div className="relative bg-gradient-to-br from-gray-50 to-purple-50/40 p-5 border-b border-gray-100">
-                  {/* Checkbox */}
-                  <div className="absolute top-3 left-3 z-10">
+                <div className="relative bg-gradient-to-br from-gray-50 via-purple-50/20 to-gray-50 p-3.5 sm:p-4 border-b border-gray-100">
+                  {/* Top Bar: Checkbox & Status */}
+                  <div className="flex items-center justify-between mb-2.5">
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => handleSelectOne(cert.id)}
                       className="size-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
                     />
-                  </div>
 
-                  {/* Status Badge */}
-                  <div className="absolute top-3 right-3 z-10">
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold whitespace-nowrap shrink-0",
+                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap shrink-0",
                         cert.status === "Active"
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : "bg-amber-50 text-amber-700 border border-amber-200"
                       )}
                     >
-                      <span>{cert.status === "Active" ? "● Active" : "○ Draft"}</span>
+                      <span
+                        className={cn(
+                          "size-1.5 rounded-full",
+                          cert.status === "Active" ? "bg-emerald-500" : "bg-amber-500"
+                        )}
+                      />
+                      <span>{cert.status}</span>
                     </span>
                   </div>
 
-                  {/* Miniature Certificate Border Render */}
+                  {/* Certificate Border Render - Fills Top Width */}
                   <div
                     className={cn(
-                      "mt-4 mx-auto w-full aspect-[16/10] max-w-[280px] rounded-xl bg-white p-3 shadow-xs border flex flex-col justify-between relative overflow-hidden",
-                      cert.templateStyle === "Classic Border" && "border-2 border-amber-300 ring-2 ring-purple-100",
-                      cert.templateStyle === "Corporate Crest" && "border-2 border-blue-300 ring-2 ring-blue-50",
+                      "w-full aspect-[16/10] rounded-xl bg-white p-3.5 sm:p-4 shadow-xs border flex flex-col justify-between relative overflow-hidden",
+                      cert.templateStyle === "Classic Border" && "border-2 border-amber-300 ring-2 ring-amber-50",
+                      cert.templateStyle === "Corporate Crest" && "border-2 border-indigo-300 ring-2 ring-indigo-50",
                       cert.templateStyle === "Technical Excellence" && "border-2 border-teal-300 ring-2 ring-teal-50",
                       cert.templateStyle === "Modern Geometric" && "border-2 border-purple-300 ring-2 ring-purple-50"
                     )}
@@ -463,55 +425,26 @@ export default function AdminCertificatesPage() {
                     </div>
 
                     <div className="text-center my-auto py-1">
-                      <p className="text-[11px] font-serif font-bold text-gray-900 leading-snug line-clamp-2">
+                      <p className="text-xs sm:text-sm font-serif font-bold text-gray-900 leading-snug line-clamp-2">
                         {cert.title}
                       </p>
-                      <p className="text-[9px] text-gray-500 mt-0.5 truncate">
+                      <p className="text-[10px] sm:text-xs text-gray-500 mt-1 line-clamp-1">
                         {cert.courseTitle}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-gray-100 pt-1 text-[9px] text-gray-500">
+                    <div className="flex items-center justify-between border-t border-gray-100 pt-1.5 text-[10px] sm:text-xs text-gray-500">
                       <span className="font-mono">{cert.code}</span>
                       <span className="font-semibold text-purple-700">{cert.validity}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Card Content & Metadata */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs font-bold text-purple-700 border border-purple-100 whitespace-nowrap shrink-0">
-                        {cert.templateStyle}
-                      </span>
-                      <span className="text-xs text-gray-500 font-mono truncate">{cert.code}</span>
-                    </div>
-
-                    <h3 className="mt-2 text-base font-bold text-gray-900 line-clamp-2">
-                      {cert.title}
-                    </h3>
-
-                    <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-600">
-                      <CoursesIcon className="size-3.5 text-purple-600 shrink-0" />
-                      <span className="font-medium truncate">{cert.courseTitle}</span>
-                    </div>
-
-                    <p className="mt-2 text-xs text-gray-500 line-clamp-2 leading-relaxed">
-                      {cert.description}
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 pt-3 border-t border-gray-100 text-xs">
-                    <div className="flex items-center justify-between font-medium">
-                      <span className="text-gray-500">Passing Grade:</span>
-                      <span className="font-bold text-gray-900">{cert.passingScore}% minimum</span>
-                    </div>
-                    <div className="flex items-center justify-between font-medium">
-                      <span className="text-gray-500">Trainees Awarded:</span>
-                      <span className="font-bold text-purple-700">{cert.issuedCount} certified</span>
-                    </div>
-                  </div>
+                {/* Card Content & Title */}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center">
+                  <h3 className="text-base font-bold text-gray-900 line-clamp-2">
+                    {cert.title}
+                  </h3>
                 </div>
 
                 {/* Card Action Footer */}
@@ -525,12 +458,12 @@ export default function AdminCertificatesPage() {
                   </button>
 
                   <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => handleOpenEdit(cert)}
+                    <Link
+                      href={`/admin/certificates/builder?id=${cert.id}`}
                       className="rounded-xl border border-purple-200 bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 transition-colors whitespace-nowrap shrink-0"
                     >
                       <span className="whitespace-nowrap">Edit</span>
-                    </button>
+                    </Link>
                     <button
                       onClick={() => handleDeleteCert(cert.id)}
                       className="rounded-xl p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors shrink-0"
@@ -653,12 +586,12 @@ export default function AdminCertificatesPage() {
                           >
                             <span className="whitespace-nowrap">Preview</span>
                           </button>
-                          <button
-                            onClick={() => handleOpenEdit(cert)}
+                          <Link
+                            href={`/admin/certificates/builder?id=${cert.id}`}
                             className="rounded-xl border border-purple-200 bg-purple-50 px-3 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 transition-colors whitespace-nowrap shrink-0"
                           >
                             <span className="whitespace-nowrap">Edit</span>
-                          </button>
+                          </Link>
                           <button
                             onClick={() => handleDeleteCert(cert.id)}
                             className="p-1.5 text-gray-400 hover:text-red-600 transition-colors shrink-0"
@@ -919,7 +852,7 @@ export default function AdminCertificatesPage() {
                 previewCert.templateStyle === "Classic Border" &&
                   "border-8 border-double border-amber-400 ring-4 ring-amber-100",
                 previewCert.templateStyle === "Corporate Crest" &&
-                  "border-8 border-double border-blue-600 ring-4 ring-blue-100",
+                  "border-8 border-double border-indigo-600 ring-4 ring-indigo-100",
                 previewCert.templateStyle === "Technical Excellence" &&
                   "border-8 border-double border-teal-600 ring-4 ring-teal-100",
                 previewCert.templateStyle === "Modern Geometric" &&
@@ -992,12 +925,19 @@ export default function AdminCertificatesPage() {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between gap-3 border-t border-gray-100 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 pt-4">
               <span className="text-xs text-gray-500">
                 Template: <strong>{previewCert.templateStyle}</strong> • Validity: <strong>{previewCert.validity}</strong>
               </span>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/certificates/verify?code=${previewCert.code}`}
+                  target="_blank"
+                  className="rounded-xl border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-[#7D52F4] hover:bg-purple-100 transition-colors whitespace-nowrap shrink-0"
+                >
+                  <span className="whitespace-nowrap">Verify Credential ↗</span>
+                </Link>
                 <button
                   onClick={() => window.print()}
                   className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap shrink-0"
@@ -1006,11 +946,191 @@ export default function AdminCertificatesPage() {
                 </button>
                 <button
                   onClick={() => setPreviewCert(null)}
-                  className="rounded-xl bg-purple-600 px-5 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
+                  className="rounded-xl bg-[#7D52F4] px-5 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors whitespace-nowrap shrink-0"
                 >
                   <span className="whitespace-nowrap">Close Preview</span>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= GLOBAL CERTIFICATE GOVERNANCE SETTINGS MODAL ================= */}
+      {isSettingsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="relative w-full max-w-xl rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-gray-100 space-y-5 max-h-[90vh] overflow-y-auto [scrollbar-width:thin]">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div>
+                <span className="text-xs font-bold text-[#7D52F4] uppercase tracking-wider">Governance &amp; Authority</span>
+                <h3 className="text-xl font-bold text-gray-900">Certificate Settings</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSettingsModalOpen(false)}
+                className="p-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+              >
+                <CloseIcon className="size-5" />
+              </button>
+            </div>
+
+            {settingsNotice && (
+              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs font-semibold text-emerald-800 animate-in fade-in duration-100">
+                ✓ {settingsNotice}
+              </div>
+            )}
+
+            <div className="space-y-4 text-xs">
+              {/* 1. Instructor Template Permission Toggle */}
+              <div className="rounded-2xl border border-purple-100 bg-purple-50/40 p-3.5 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-900">Allow Instructors to Use Admin Templates</span>
+                  <input
+                    type="checkbox"
+                    checked={govSettings.allowInstructorsToUseAdminCertificates}
+                    onChange={(e) =>
+                      setGovSettings({ ...govSettings, allowInstructorsToUseAdminCertificates: e.target.checked })
+                    }
+                    className="size-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                </div>
+                <p className="text-gray-500 leading-snug">
+                  Enable instructors to assign certificate templates built by admin to their courses.
+                </p>
+              </div>
+
+              {/* 2. Head of Institution / Authorized Name */}
+              <div className="space-y-1">
+                <label className="font-bold text-gray-800">
+                  Head of Institution / Authorized Name
+                </label>
+                <input
+                  type="text"
+                  value={govSettings.authorizedName}
+                  onChange={(e) => setGovSettings({ ...govSettings, authorizedName: e.target.value })}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 p-2.5 text-xs text-gray-900 focus:border-purple-500 focus:bg-white focus:outline-none"
+                />
+                <span className="text-[11px] text-gray-400">
+                  Auto-picked from admin. This name is printed under the authorized signature on credentials.
+                </span>
+              </div>
+
+              {/* 3. Authorized Designation / Title */}
+              <div className="space-y-1">
+                <label className="font-bold text-gray-800">
+                  Signatory Designation / Title
+                </label>
+                <input
+                  type="text"
+                  value={govSettings.authorizedTitle}
+                  onChange={(e) => setGovSettings({ ...govSettings, authorizedTitle: e.target.value })}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 p-2.5 text-xs text-gray-900 focus:border-purple-500 focus:bg-white focus:outline-none"
+                />
+              </div>
+
+              {/* 4. Authorized Company / Institution Name */}
+              <div className="space-y-1">
+                <label className="font-bold text-gray-800">
+                  Authorized Company / Academy Name
+                </label>
+                <input
+                  type="text"
+                  value={govSettings.authorizedCompany}
+                  onChange={(e) => setGovSettings({ ...govSettings, authorizedCompany: e.target.value })}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 p-2.5 text-xs text-gray-900 focus:border-purple-500 focus:bg-white focus:outline-none"
+                />
+                <span className="text-[11px] text-gray-400">Auto-picked from application profile.</span>
+              </div>
+
+              {/* 5. Show Instructor Name Toggle */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-3.5 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-900">Show Instructor Name on Certificate</span>
+                  <input
+                    type="checkbox"
+                    checked={govSettings.showInstructorName}
+                    onChange={(e) =>
+                      setGovSettings({ ...govSettings, showInstructorName: e.target.checked })
+                    }
+                    className="size-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                </div>
+                <p className="text-gray-500 leading-snug">
+                  Default is OFF. University credentials showcase the Head of Institution. Enable to also show the course instructor.
+                </p>
+              </div>
+
+              {/* 6. Send Certificate Link in Course Completion Email */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-3.5 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-900">Send Certificate Link in Completion Email</span>
+                  <input
+                    type="checkbox"
+                    checked={govSettings.sendCertificateLinkInEmail}
+                    onChange={(e) =>
+                      setGovSettings({ ...govSettings, sendCertificateLinkInEmail: e.target.checked })
+                    }
+                    className="size-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                </div>
+                <p className="text-gray-500 leading-snug">
+                  Automatically delivers the direct certificate link along with the completion email.
+                </p>
+              </div>
+
+              {/* 7. Require Login to View Certificate */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-3.5 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-900">Require Student Login to View</span>
+                  <input
+                    type="checkbox"
+                    checked={govSettings.requireLoginToAccess}
+                    onChange={(e) =>
+                      setGovSettings({ ...govSettings, requireLoginToAccess: e.target.checked })
+                    }
+                    className="size-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                </div>
+                <p className="text-gray-500 leading-snug">
+                  Students must be logged in to access credentials if public view is not enabled.
+                </p>
+              </div>
+
+              {/* 8. Certificate Verification Hub Link */}
+              <div className="pt-2 flex items-center justify-between border-t border-gray-100">
+                <span className="text-gray-600 font-medium">Verification System:</span>
+                <Link
+                  href="/certificates/verify"
+                  target="_blank"
+                  className="font-bold text-[#7D52F4] hover:underline inline-flex items-center gap-1"
+                >
+                  <span>Open Verification Hub ↗</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setIsSettingsModalOpen(false)}
+                className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSettingsNotice("Certificate settings successfully saved!");
+                  setTimeout(() => {
+                    setSettingsNotice(null);
+                    setIsSettingsModalOpen(false);
+                  }, 1200);
+                }}
+                className="rounded-xl bg-[#7D52F4] px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors"
+              >
+                Save Settings
+              </button>
             </div>
           </div>
         </div>

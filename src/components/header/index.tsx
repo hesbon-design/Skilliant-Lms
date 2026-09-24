@@ -40,19 +40,6 @@ const menuList: MenuType[] = [
     label: "Contact",
     href: "/contact",
   },
-  {
-    id: 6,
-    label: "All Pages",
-    href: "/courses",
-    subMenu: [
-      { id: 1, label: "Learner & Company Portal", href: "/dashboard" },
-      { id: 2, label: "Instructor & Admin Studio", href: "/admin" },
-      { id: 3, label: "Course Catalog", href: "/courses" },
-      { id: 4, label: "Shopping Cart", href: "/cart" },
-      { id: 5, label: "Terms and Conditions", href: "/terms-and-conditions" },
-      { id: 6, label: "Privacy Policy", href: "/privacy-policy" },
-    ],
-  },
 ];
 
 const Header = () => {

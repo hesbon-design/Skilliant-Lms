@@ -1,0 +1,110 @@
+[
+  {
+    "id": "stu-1",
+    "name": "Alex Mercer",
+    "email": "a.mercer@apexlogistics.com",
+    "avatarLetter": "A",
+    "avatarBg": "bg-purple-600",
+    "company": "Apex Industrial Logistics",
+    "enrolledCount": 2
+  },
+  {
+    "id": "stu-2",
+    "name": "Sarah Jenkins",
+    "email": "s.jenkins@outlook.com",
+    "avatarLetter": "S",
+    "avatarBg": "bg-emerald-600",
+    "company": "Freelance / Individual",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-3",
+    "name": "Devon Vance",
+    "email": "d.vance@apexlogistics.com",
+    "avatarLetter": "D",
+    "avatarBg": "bg-purple-600",
+    "company": "Apex Industrial Logistics",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-4",
+    "name": "Elena Rostova",
+    "email": "elena.rostova@techcorp.io",
+    "avatarLetter": "E",
+    "avatarBg": "bg-indigo-600",
+    "company": "TechCorp Global Academy",
+    "enrolledCount": 2
+  },
+  {
+    "id": "stu-5",
+    "name": "Marcus Brody",
+    "email": "m.brody@starkmachinery.com",
+    "avatarLetter": "M",
+    "avatarBg": "bg-amber-600",
+    "company": "Stark Heavy Machinery",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-6",
+    "name": "Carlos Mendez",
+    "email": "c.mendez@metrotransit.org",
+    "avatarLetter": "C",
+    "avatarBg": "bg-rose-600",
+    "company": "MetroWorks Transit",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-7",
+    "name": "Priya Sharma",
+    "email": "priya.sharma@gmail.com",
+    "avatarLetter": "P",
+    "avatarBg": "bg-pink-600",
+    "company": "Individual Learner",
+    "enrolledCount": 2
+  },
+  {
+    "id": "stu-8",
+    "name": "Liam O'Connor",
+    "email": "liam.oconnor@directenterprise.com",
+    "avatarLetter": "L",
+    "avatarBg": "bg-teal-600",
+    "company": "Direct Enterprise Client",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-9",
+    "name": "Alex Walker",
+    "email": "alex.walker@apexlogistics.com",
+    "avatarLetter": "A",
+    "avatarBg": "bg-cyan-600",
+    "company": "Apex Logistics Corp",
+    "enrolledCount": 2
+  },
+  {
+    "id": "stu-10",
+    "name": "David Henderson",
+    "email": "d.henderson@summitlogistics.org",
+    "avatarLetter": "D",
+    "avatarBg": "bg-violet-600",
+    "company": "Summit Logistics Inc.",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-11",
+    "name": "Kavita Patel",
+    "email": "k.patel@horizonworks.tech",
+    "avatarLetter": "K",
+    "avatarBg": "bg-orange-600",
+    "company": "Horizon Works Technical",
+    "enrolledCount": 1
+  },
+  {
+    "id": "stu-12",
+    "name": "Carlos Ramirez",
+    "email": "carlos@baymaterials.com",
+    "avatarLetter": "C",
+    "avatarBg": "bg-emerald-700",
+    "company": "Bay Materials Handling",
+    "enrolledCount": 3
+  }
+]

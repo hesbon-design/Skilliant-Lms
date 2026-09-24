@@ -1,0 +1,11 @@
+[
+  { "id": "none", "name": "None", "isNone": true, "bgGradient": "bg-gray-50", "badgeAccent": "text-gray-400", "borderColor": "border-gray-200" },
+  { "id": "classic", "name": "Classic Border", "bgGradient": "from-amber-50 to-orange-50/50", "badgeAccent": "text-amber-700", "borderColor": "border-amber-300" },
+  { "id": "geometric", "name": "Modern Geometric", "bgGradient": "from-teal-50 via-amber-50 to-rose-50", "badgeAccent": "text-teal-700", "borderColor": "border-teal-300" },
+  { "id": "watercolor", "name": "Artistic Wave", "bgGradient": "from-pink-50 via-purple-50 to-indigo-50", "badgeAccent": "text-purple-700", "borderColor": "border-purple-300" },
+  { "id": "stripes", "name": "Modern Diagonal", "bgGradient": "from-orange-50 to-red-50", "badgeAccent": "text-orange-700", "borderColor": "border-orange-300" },
+  { "id": "laurel", "name": "Corporate Laurel", "bgGradient": "from-yellow-50 to-amber-100", "badgeAccent": "text-amber-800", "borderColor": "border-yellow-400" },
+  { "id": "fluid", "name": "Fluid Gradient", "bgGradient": "from-violet-50 to-fuchsia-50", "badgeAccent": "text-violet-700", "borderColor": "border-violet-300" },
+  { "id": "banner", "name": "Corporate Banner", "bgGradient": "from-purple-50 via-indigo-50 to-purple-100", "badgeAccent": "text-purple-700", "borderColor": "border-purple-300" },
+  { "id": "minimal", "name": "Technical Minimal", "bgGradient": "from-slate-50 to-purple-50/40", "badgeAccent": "text-slate-700", "borderColor": "border-slate-300" }
+]

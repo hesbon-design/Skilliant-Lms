@@ -2,14 +2,22 @@ export interface AdminCoupon {
   id: string;
   code: string;
   title: string;
-  discountType: "percentage" | "fixed";
+  method?: "code" | "automatic";
+  discountType: "percentage" | "fixed" | "free";
   discountValue: number;
-  applicableType: "all" | "course" | "track";
+  applicableType: "all" | "course" | "track" | "category";
   applicableTargetName?: string;
   usageLimit: number | null; // null = unlimited
+  limitPerCustomer?: number | null;
   usedCount: number;
+  minRequirementType?: "none" | "amount" | "quantity";
   minPurchaseAmount?: number;
+  minQuantity?: number;
+  startDate?: string;
+  startTime?: string;
+  hasEndDate?: boolean;
   expiryDate: string;
+  expiryTime?: string;
   status: "active" | "draft" | "expired";
   createdAt: string;
 }

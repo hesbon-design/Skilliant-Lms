@@ -1,258 +1,216 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
+import { initialGradeRules } from "@/data/gradebookData";
 import { cn } from "@/lib/utils";
 
-interface StudentCourseEvaluation {
-  slug: string;
-  title: string;
-  category: "Driving School" | "Heavy Machinery" | "Technical College";
-  instructor: string;
-  progress: number;
-  theoryScore: string;
-  practicalDrills: string;
-  safetyScore: string;
-  competencyStatus: "competent" | "in_training" | "retake_needed";
-  competencyScore: number;
-  qualificationStatus: string;
-  isUnlocked: boolean;
+interface StudentCourseGrade {
+  courseId: string;
+  courseTitle: string;
+  category: string;
+  courseSlug: string;
+  quizScore: number;
+  assignmentScore: number;
+  overallScore: number;
+  completedLessons: number;
+  totalLessons: number;
+  completionDate: string;
+  certificateEarned: boolean;
 }
 
-const studentCourses: StudentCourseEvaluation[] = [
+const learnerCourseGrades: StudentCourseGrade[] = [
   {
-    slug: "commercial-fleet-driving",
-    title: "Commercial Fleet Driving & Advanced Hazard Overtraining",
-    category: "Driving School",
-    instructor: "Capt. Marcus Vance, Master Fleet Safety Director",
-    progress: 78,
-    theoryScore: "98% (DOT Rules)",
-    practicalDrills: "94% (24.5 Behind-The-Wheel Hrs)",
-    safetyScore: "100% (Zero Faults)",
-    competencyStatus: "in_training",
-    competencyScore: 94,
-    qualificationStatus: "Class A Commercial Endorsement Eligible",
-    isUnlocked: false,
-  },
-  {
-    slug: "heavy-machinery-operation",
-    title: "Heavy Machinery & Excavator Operations (OSHA/ISO Standard)",
+    courseId: "c-1",
+    courseTitle: "Forklift Safety & Zero-Fault Inspection",
     category: "Heavy Machinery",
-    instructor: "Michael Lee, Certified Heavy Equipment Inspector",
-    progress: 100,
-    theoryScore: "100% (OSHA Safety)",
-    practicalDrills: "96% (32 In-Cab Machine Simulator Hrs)",
-    safetyScore: "98.5% (Pre-Trip Passed)",
-    competencyStatus: "competent",
-    competencyScore: 97,
-    qualificationStatus: "Verified Heavy Equipment Operator Credential",
-    isUnlocked: true,
+    courseSlug: "forklift-safety-inspection",
+    quizScore: 96,
+    assignmentScore: 92,
+    overallScore: 94,
+    completedLessons: 24,
+    totalLessons: 24,
+    completionDate: "September 18, 2026",
+    certificateEarned: true,
   },
   {
-    slug: "industrial-hydraulics-inspection",
-    title: "Industrial Hydraulics & Pre-Trip Machine Inspection",
-    category: "Technical College",
-    instructor: "Sarah Jenkins, Field Safety Specialist",
-    progress: 33,
-    theoryScore: "78% (Theory Pass)",
-    practicalDrills: "55% (Maneuver Drills Needed)",
-    safetyScore: "82% (1 Minor Inspection Fault)",
-    competencyStatus: "retake_needed",
-    competencyScore: 58,
-    qualificationStatus: "Locked — Drill Remediation Required",
-    isUnlocked: false,
+    courseId: "c-2",
+    courseTitle: "Complete React Developer Course",
+    category: "Software Development",
+    courseSlug: "complete-react-developer",
+    quizScore: 88,
+    assignmentScore: 84,
+    overallScore: 86,
+    completedLessons: 22,
+    totalLessons: 24,
+    completionDate: "In Progress",
+    certificateEarned: false,
+  },
+  {
+    courseId: "c-3",
+    courseTitle: "Figma Fundamentals & Interactive Prototyping",
+    category: "Design & UX",
+    courseSlug: "figma-fundamentals",
+    quizScore: 78,
+    assignmentScore: 80,
+    overallScore: 79,
+    completedLessons: 18,
+    totalLessons: 22,
+    completionDate: "In Progress",
+    certificateEarned: false,
   },
 ];
 
-export default function DashboardGradebookPage() {
+export default function StudentGradebookPage() {
+  const [selectedTerm, setSelectedTerm] = useState("all");
+
+  const getGradeRule = (score: number) => {
+    const matched = initialGradeRules.find(
+      (r) => score >= r.minPercent && score <= r.maxPercent,
+    );
+    return matched || initialGradeRules[initialGradeRules.length - 1];
+  };
+
+  const gpaValues = learnerCourseGrades.map((c) => getGradeRule(c.overallScore).point);
+  const averageGpa = (
+    gpaValues.reduce((a, b) => a + b, 0) / gpaValues.length
+  ).toFixed(2);
+  const averageScore = Math.round(
+    learnerCourseGrades.map((c) => c.overallScore).reduce((a, b) => a + b, 0) /
+      learnerCourseGrades.length,
+  );
+
   return (
-    <div className="px-6 py-8 sm:px-10 lg:px-12 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Competency &amp; Performance Record
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Student Gradebook</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Real-time evaluation records for driving school, large machinery operations, and technical college overtraining.
+            Official academic transcript, quiz evaluations, and course grade performance.
           </p>
         </div>
 
-        <Link
-          href="/dashboard/certificates"
-          className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-purple-700 transition-colors"
-        >
-          <span>View Verified Credentials</span>
-          <span>→</span>
-        </Link>
-      </div>
-
-      {/* Overtraining Standards Banner */}
-      <div className="rounded-2xl border border-purple-100 bg-gradient-to-r from-purple-50 via-white to-purple-50 p-5 sm:p-6 flex items-start gap-4 shadow-2xs">
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-purple-600 text-white text-xl shadow-xs">
-          🛡️
-        </div>
-        <div className="space-y-1">
-          <h3 className="text-sm font-bold text-gray-900">
-            Skilliant Overtraining Standard (Zero-Fault Competency)
-          </h3>
-          <p className="text-sm leading-relaxed text-gray-600">
-            In commercial driving, crane operation, heavy earthmoving, and vocational apprenticeships, academic GPA does not apply.
-            Instead, learners are overtrained to achieve <strong>≥85% practical competency</strong>, <strong>zero critical safety infractions</strong>, and certified field readiness before equipment deployment.
-          </p>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/certificates"
+            className="rounded-xl border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-100/70 transition-colors"
+          >
+            View Certificates →
+          </Link>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Card 1: Practical Competency */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Practical Competency</p>
-            <span className="text-lg">🎯</span>
+      {/* Summary Stat Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Cumulative GPA</span>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-gray-900">{averageGpa}</span>
+            <span className="text-xs text-gray-500 font-medium">/ 4.00 Scale</span>
           </div>
-          <h4 className="mt-2 text-2xl font-bold text-gray-900">94% Mastery</h4>
-          <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
-            <div className="h-full w-[94%] rounded-full bg-green-500" />
-          </div>
-          <p className="mt-2 text-sm text-green-600 font-semibold">Field Ready (Benchmark ≥ 85%)</p>
+          <p className="mt-1 text-xs text-emerald-600 font-semibold">Good Academic Standing</p>
         </div>
 
-        {/* Card 2: Safety Compliance */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Safety &amp; Compliance</p>
-            <span className="text-lg">🛡️</span>
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Average Course Score</span>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-gray-900">{averageScore}%</span>
+            <span className="text-xs text-purple-600 font-medium">Weighted Score</span>
           </div>
-          <h4 className="mt-2 text-2xl font-bold text-gray-900">99.2%</h4>
-          <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
-            <div className="h-full w-[99%] rounded-full bg-purple-600" />
-          </div>
-          <p className="mt-2 text-sm text-purple-600 font-semibold">Zero Critical Infractions</p>
+          <p className="mt-1 text-xs text-gray-500">Across {learnerCourseGrades.length} enrolled subjects</p>
         </div>
 
-        {/* Card 3: In-Cab & Sim Hours */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Practical &amp; Sim Hours</p>
-            <span className="text-lg">⏱️</span>
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xs">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Certificates Awarded</span>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-gray-900">
+              {learnerCourseGrades.filter((c) => c.certificateEarned).length}
+            </span>
+            <span className="text-xs text-emerald-600 font-medium">Accredited</span>
           </div>
-          <h4 className="mt-2 text-2xl font-bold text-gray-900">38.5 / 50 hrs</h4>
-          <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
-            <div className="h-full w-[77%] rounded-full bg-purple-600" />
-          </div>
-          <p className="mt-2 text-sm text-gray-500 font-medium">In-Cab &amp; Behind-the-Wheel</p>
-        </div>
-
-        {/* Card 4: Endorsements & Licenses */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xs">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-gray-700">Qualifications Earned</p>
-            <span className="text-lg">📜</span>
-          </div>
-          <h4 className="mt-2 text-2xl font-bold text-gray-900">1 Certified</h4>
-          <p className="mt-1 text-sm text-gray-500">2 In Practical Training</p>
-          <p className="mt-2 text-sm text-green-600 font-semibold">OSHA / DOT Standards</p>
+          <p className="mt-1 text-xs text-gray-500">Passing threshold ≥ 70%</p>
         </div>
       </div>
 
-      {/* Program Competency Table */}
+      {/* Transcript Table */}
       <div className="rounded-2xl border border-gray-100 bg-white shadow-xs overflow-hidden">
-        <div className="border-b border-gray-100 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">Program Evaluations &amp; Practical Competencies</h3>
-            <p className="text-sm text-gray-500">Evaluation breakdown across driving, machinery operation, and technical disciplines</p>
-          </div>
-          <span className="rounded-lg bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 self-start sm:self-auto">
-            Passing Standard: ≥ 85%
-          </span>
+        <div className="border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+          <h3 className="font-bold text-gray-900 text-base">Course Grades &amp; Performance</h3>
+          <span className="text-xs text-gray-500">Grading Scale: Standard 4.0</span>
         </div>
 
         <div className="overflow-x-auto [scrollbar-width:thin]">
-          <table className="w-full text-left text-sm min-w-[950px]">
-            <thead className="border-b border-gray-100 bg-gray-50/70 text-xs font-semibold uppercase tracking-wider text-gray-500">
-              <tr>
-                <th className="px-6 py-3.5 whitespace-nowrap">Program &amp; Track</th>
-                <th className="px-6 py-3.5 whitespace-nowrap">Curriculum Progress</th>
-                <th className="px-6 py-3.5 whitespace-nowrap">Safety &amp; Theory</th>
-                <th className="px-6 py-3.5 whitespace-nowrap">Practical &amp; Sim Drills</th>
-                <th className="px-6 py-3.5 whitespace-nowrap">Competency Status</th>
-                <th className="px-6 py-3.5 whitespace-nowrap">Endorsement / License</th>
-                <th className="px-6 py-3.5 text-right whitespace-nowrap">Action</th>
+          <table className="w-full text-left text-sm min-w-[700px]">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50/50 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3.5">Course Subject</th>
+                <th className="px-6 py-3.5">Quizzes Avg</th>
+                <th className="px-6 py-3.5">Assignments Avg</th>
+                <th className="px-6 py-3.5">Overall Score</th>
+                <th className="px-6 py-3.5">Grade Badge</th>
+                <th className="px-6 py-3.5">Grade Point</th>
+                <th className="px-6 py-3.5 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-gray-700">
-              {studentCourses.map((c) => (
-                <tr key={c.slug} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap min-w-[280px]">
-                    <span className="inline-block rounded-md bg-purple-50 px-2.5 py-0.5 text-xs font-bold text-purple-700 uppercase tracking-wider mb-1">
-                      {c.category}
-                    </span>
-                    <p className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                      {c.title}
-                    </p>
-                    <p className="font-normal text-gray-500 text-sm mt-0.5 whitespace-nowrap">Instructor: {c.instructor}</p>
-                  </td>
+              {learnerCourseGrades.map((course) => {
+                const grade = getGradeRule(course.overallScore);
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">{c.progress}%</span>
-                      <div className="h-1.5 w-16 rounded-full bg-gray-100 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-purple-600"
-                          style={{ width: `${c.progress}%` }}
-                        />
+                return (
+                  <tr key={course.courseId} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div>
+                        <span className="rounded-md bg-purple-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                          {course.category}
+                        </span>
+                        <p className="mt-1 font-bold text-gray-900 text-sm">
+                          {course.courseTitle}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {course.completedLessons}/{course.totalLessons} lessons completed
+                        </p>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="font-semibold text-gray-900">{c.theoryScore}</p>
-                    <p className="text-sm text-green-700 font-medium">Safety: {c.safetyScore}</p>
-                  </td>
+                    <td className="px-6 py-4 font-semibold text-gray-700">
+                      {course.quizScore}%
+                    </td>
 
-                  <td className="px-4 py-4 font-medium text-gray-700 whitespace-nowrap">
-                    {c.practicalDrills}
-                  </td>
+                    <td className="px-6 py-4 font-semibold text-gray-700">
+                      {course.assignmentScore}%
+                    </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {c.competencyStatus === "competent" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-700 border border-green-200 whitespace-nowrap">
-                        <span>✓</span> Certified Competent ({c.competencyScore}%)
-                      </span>
-                    )}
-                    {c.competencyStatus === "in_training" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-1 text-xs font-bold text-purple-700 border border-purple-200 whitespace-nowrap">
-                        <span>⚡</span> Field Training ({c.competencyScore}%)
-                      </span>
-                    )}
-                    {c.competencyStatus === "retake_needed" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 border border-amber-200 whitespace-nowrap">
-                        <span>⚠</span> Drill Retake ({c.competencyScore}%)
-                      </span>
-                    )}
-                  </td>
+                    <td className="px-6 py-4 font-bold text-gray-900">
+                      {course.overallScore}%
+                    </td>
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={cn(
-                      "rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap",
-                      c.isUnlocked
-                        ? "bg-green-50 text-green-700 border border-green-200"
-                        : "bg-gray-100 text-gray-600"
-                    )}>
-                      {c.qualificationStatus}
-                    </span>
-                  </td>
+                    <td className="px-6 py-4">
+                      <div
+                        className={cn(
+                          "size-8 rounded-full flex items-center justify-center font-bold text-xs text-white shadow-2xs",
+                          grade.badgeBg,
+                        )}
+                      >
+                        {grade.badge}
+                      </div>
+                    </td>
 
-                  <td className="px-6 py-4 text-right whitespace-nowrap">
-                    <Link
-                      href={`/learn/${c.slug}/gradebook`}
-                      className="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-purple-600 hover:bg-purple-50 transition-colors whitespace-nowrap"
-                    >
-                      View Drills →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                    <td className="px-6 py-4 font-bold text-gray-900">
+                      {grade.pointFormatted} pts
+                    </td>
+
+                    <td className="px-6 py-4 text-right">
+                      <Link
+                        href={`/learn/${course.courseSlug}`}
+                        className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition-colors"
+                      >
+                        Open Course →
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

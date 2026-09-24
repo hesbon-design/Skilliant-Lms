@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import RoleSwitcher from "@/components/RoleSwitcher";
 import {
   OverviewIcon,
   CoursesIcon,
@@ -17,7 +18,6 @@ import {
   BillingIcon,
   SettingsIcon,
   BellIcon,
-  SearchIcon,
   LogoutIconSvg,
   SwitchPortalIcon,
   MenuIcon,
@@ -28,6 +28,7 @@ import {
   EnrollmentIcon,
   PaymentsIcon,
   CertificateIcon,
+  GradebookIcon,
 } from "./adminIcons";
 
 interface NavItem {
@@ -41,9 +42,10 @@ interface NavItem {
 const academicNavItems: NavItem[] = [
   { label: "Overview", href: "/admin", icon: <OverviewIcon className="size-4" /> },
   { label: "Courses", href: "/admin/courses", icon: <CoursesIcon className="size-4" /> },
-  { label: "Bundles & Specializations", href: "/admin/bundles", icon: <BundleIcon className="size-4" /> },
   { label: "Categories", href: "/admin/categories", icon: <CategoriesIcon className="size-4" /> },
+  { label: "Gradebook", href: "/admin/gradebook", icon: <GradebookIcon className="size-4" /> },
   { label: "Certificates", href: "/admin/certificates", icon: <CertificateIcon className="size-4" /> },
+  { label: "Course Bundles", href: "/admin/bundles", icon: <BundleIcon className="size-4" /> },
   { label: "Enrollments", href: "/admin/enrollments", icon: <EnrollmentIcon className="size-4" /> },
   { label: "Students", href: "/admin/students", icon: <StudentsIcon className="size-4" /> },
   { label: "Announcements", href: "/admin/announcements", icon: <AnnouncementsIcon className="size-4" /> },
@@ -67,14 +69,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [showNotifications, setShowNotifications] = useState(false);
   const sidebarNavRef = useRef<HTMLDivElement>(null);
 
-  const isActive = (href: string) => {
-    if (href === "/admin") {
-      return pathname === "/admin";
-    }
-    return pathname.startsWith(href);
-  };
+  const isBuilder = pathname?.startsWith("/admin/certificates/builder");
+  const isCourseBuilder =
+    pathname?.startsWith("/admin/courses/new") ||
+    (Boolean(pathname?.startsWith("/admin/courses/")) && Boolean(pathname?.endsWith("/edit")));
 
   useEffect(() => {
+    if (isBuilder) return;
     const scrollActiveIntoView = () => {
       const activeEl = sidebarNavRef.current?.querySelector<HTMLElement>('[data-active="true"]');
       if (activeEl) {
@@ -85,7 +86,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     scrollActiveIntoView();
     const timer = setTimeout(scrollActiveIntoView, 100);
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, isBuilder]);
+
+  if (isBuilder) {
+    return <>{children}</>;
+  }
+
+  const isActive = (href: string) => {
+    if (href === "/admin") {
+      return pathname === "/admin";
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#F8FAFC]">
@@ -178,13 +190,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="shrink-0 border-t border-gray-100 p-4 space-y-3">
           <div className="space-y-1.5">
             <Link
-              href="/dashboard"
-              className="flex items-center gap-2.5 rounded-xl border border-purple-200 bg-purple-50/60 px-3.5 py-2 text-sm font-semibold text-purple-700 hover:bg-purple-100/70 transition-colors"
-            >
-              <SwitchPortalIcon className="size-4" />
-              <span>Switch to Learner Portal</span>
-            </Link>
-            <Link
               href="/"
               className="flex items-center justify-center rounded-xl border border-gray-200 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
             >
@@ -212,14 +217,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <MenuIcon className="size-5" />
             </button>
-            <div className="relative max-sm:hidden">
-              <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search courses, students, evaluations..."
-                className="w-72 rounded-xl border border-gray-200 bg-gray-50/50 py-1.5 pl-9 pr-4 text-sm text-gray-700 placeholder:text-gray-400 focus:border-purple-500 focus:bg-white focus:outline-none"
-              />
-            </div>
+            <RoleSwitcher size="sm" />
           </div>
 
           <div className="flex items-center gap-4">
@@ -323,12 +321,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   );
                 })}
               </nav>
+              <div className="shrink-0 pt-3 border-t border-gray-100 space-y-2 mt-4">
+                <p className="px-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">Switch Workspace</p>
+                <RoleSwitcher size="sm" className="w-full justify-between" />
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-xl border border-gray-200 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  ← Public Website
+                </Link>
+              </div>
             </div>
           </div>
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10">
+        <main
+          className={cn(
+            "flex-1 overflow-y-auto",
+            isCourseBuilder ? "p-0" : "p-6 sm:p-8 lg:p-10"
+          )}
+        >
           {children}
         </main>
       </div>
